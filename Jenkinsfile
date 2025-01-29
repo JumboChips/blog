@@ -22,10 +22,13 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir(BACKEND_DIR) {
-                    sh 'mvn clean package'
+                    sh 'ls -la'  // ✅ 현재 파일 목록 확인
+                    sh 'chmod +x gradlew'  // ✅ Gradle Wrapper 실행 권한 부여
+                    sh './gradlew clean build'  // ✅ Gradle 빌드 명령어 실행
                 }
             }
         }
+
 
         stage('Build Frontend') {
             steps {
