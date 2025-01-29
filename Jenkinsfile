@@ -11,7 +11,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/JumboChips/blog.git'
+                script {
+                    def branch = env.GIT_BRANCH ?: 'unknown'
+                    echo "현재 브랜치: ${branch}"
+                    git branch: '*/dev', url: 'https://github.com/JumboChips/blog.git'
+                }
             }
         }
 
@@ -32,17 +36,27 @@ pipeline {
             }
         }
 
-        stage('Deploy Backend') {
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                dir(BACKEND_DIR) {
+                    sh 'mvn test'
+                }
+                dir(FRONTEND_DIR) {
+                    sh 'npm test'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'main'  // 🚀 main 브랜치에서만 배포 실행
+            }
             steps {
                 sh """
                     scp -o StrictHostKeyChecking=no ${BACKEND_DIR}/target/*.jar ${EC2_USER}@${EC2_IP}:/home/ec2-user/app.jar
                     ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} "nohup java -jar /home/ec2-user/app.jar > app.log 2>&1 &"
                 """
-            }
-        }
-
-        stage('Deploy Frontend') {
-            steps {
                 sh """
                     scp -r -o StrictHostKeyChecking=no ${FRONTEND_DIR}/dist/* ${EC2_USER}@${EC2_IP}:/var/www/html/
                 """
