@@ -12,9 +12,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    def branch = env.GIT_BRANCH ?: 'unknown'
+                    def branch = env.BRANCH_NAME ?: 'dev' // 기본값 dev로 설정
                     echo "현재 브랜치: ${branch}"
-                    git branch: '*/dev', url: 'https://github.com/JumboChips/blog.git'
+                    git branch: "${branch}", url: 'https://github.com/JumboChips/blog.git'
                 }
             }
         }
