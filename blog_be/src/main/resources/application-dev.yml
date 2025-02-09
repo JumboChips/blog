@@ -3,16 +3,15 @@ server:
   port: 8080 # 애플리케이션이 실행될 포트 번호
 
 spring:
-  profiles:
-    active: dev
   application:
     name: poml # 애플리케이션 이름
   datasource:
-    url: jdbc:mysql://localhost:3306/poml?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://mysql_container:3306/my_database?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 0409
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update # create, update, validate, none 중 선택
     show-sql: true # SQL 로그를 출력할지 여부
