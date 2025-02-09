@@ -5,10 +5,10 @@ services:
     container_name: mysql_container
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 0409
+      MYSQL_ROOT_PASSWORD: "0409"
       MYSQL_DATABASE: blog
       MYSQL_USER: jumbochips
-      MYSQL_PASSWORD: 0409
+      MYSQL_PASSWORD: "0409"
     ports:
       - "3306:3306"
     volumes:
