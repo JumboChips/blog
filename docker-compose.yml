@@ -1,17 +1,55 @@
 version: '3.8'
+
 services:
   db:
     image: mysql:8.0.41
     container_name: mysql_container
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "0409"
-      MYSQL_DATABASE: blog
-      MYSQL_USER: jumbochips
-      MYSQL_PASSWORD: "0409"
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+
+  backend:
+    build: ./back
+    container_name: spring_boot_container
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+
+  frontend:
+    build: ./front
+    container_name: nuxt_container
+    restart: always
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+
 volumes:
   mysql_data:
+
+networks:
+  app_network:
+    driver: bridge
