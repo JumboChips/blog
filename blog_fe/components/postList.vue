@@ -26,17 +26,17 @@ import { useAuthStore } from '~/stores/auth';
 const authStore = useAuthStore();
 const isLoggedIn = authStore.isLoggedIn;
 
-const extractTextFromHTML = (html : String) => {
-    // <p> 태그를 제거하고 줄바꿈 문자를 추가
-    let withoutPTags = html.replace(/<p[^>]*>(.*?)<\/p>/g, '$1\n');
+const extractTextFromHTML = (html: String) => {
+  // <p> 태그를 제거하고 줄바꿈 문자를 추가
+  let withoutPTags = html.replace(/<p[^>]*>(.*?)<\/p>/g, '$1\n');
 
-    // 나머지 태그들 제거
-    let withoutTags = withoutPTags.replace(/<[^>]*>/g, '');
+  // 나머지 태그들 제거
+  let withoutTags = withoutPTags.replace(/<[^>]*>/g, '');
 
-    // &nbsp; 제거
-    let withoutNBSP = withoutTags.replace(/&nbsp;/g, ' ');
+  // &nbsp; 제거
+  let withoutNBSP = withoutTags.replace(/&nbsp;/g, ' ');
 
-    return withoutNBSP;
+  return withoutNBSP;
 }
 
 
