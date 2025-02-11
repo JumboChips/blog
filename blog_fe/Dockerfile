@@ -5,17 +5,17 @@ FROM node:22
 WORKDIR /app
 
 # 패키지 파일 복사 후 의존성 설치
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY package.json package-lock.json ./
+RUN npm install
 
 # 전체 프로젝트 복사
 COPY . .
 
 # Nuxt 앱 빌드
-RUN yarn build
+RUN npm run build
 
 # 포트 노출
 EXPOSE 3000
 
 # Nuxt 실행
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
