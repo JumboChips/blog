@@ -18,7 +18,7 @@ services:
       - app_network
 
   backend:
-    build: ./back
+    build: ./blog_be
     container_name: spring_boot_container
     restart: always
     depends_on:
@@ -35,7 +35,7 @@ services:
       - app_network
 
   frontend:
-    build: ./front
+    build: ./blog_fe
     container_name: nuxt_container
     restart: always
     depends_on:
