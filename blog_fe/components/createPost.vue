@@ -7,22 +7,16 @@
     <!-- 제목 입력 -->
     <div class="mb-6">
       <label for="title" class="block font-medium mb-1 text-gray-700">제목</label>
-      <input
-        id="title"
-        v-model="title"
+      <input id="title" v-model="title"
         class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all"
-        placeholder="글 제목을 입력하세요"
-      />
+        placeholder="글 제목을 입력하세요" />
     </div>
 
     <!-- 카테고리 선택 -->
     <div class="mb-6">
       <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
-      <select
-        id="category"
-        v-model="categoryId"
-        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all"
-      >
+      <select id="category" v-model="categoryId"
+        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all">
         <option value="1">Test Category</option>
       </select>
     </div>
@@ -31,16 +25,10 @@
     <div class="mb-6">
       <label for="tags" class="block font-medium mb-1 text-gray-700">태그</label>
       <div class="flex flex-wrap gap-2">
-        <button
-          v-for="tag in availableTags"
-          :key="tag.id"
-          @click="toggleTag(tag.id)"
-          :class="{
-            'bg-blue-500 text-white': tagIds.includes(tag.id),
-            'bg-gray-200 text-gray-700': !tagIds.includes(tag.id),
-          }"
-          class="text-sm py-2 px-4 rounded focus:outline-none transition-all"
-        >
+        <button v-for="tag in availableTags" :key="tag.id" @click="toggleTag(tag.id)" :class="{
+          'bg-blue-500 text-white': tagIds.includes(tag.id),
+          'bg-gray-200 text-gray-700': !tagIds.includes(tag.id),
+        }" class="text-sm py-2 px-4 rounded focus:outline-none transition-all">
           {{ tag.name }}
         </button>
       </div>
@@ -49,83 +37,58 @@
     <!-- 툴바 -->
     <div class="flex flex-wrap gap-3 mb-4">
       <!-- 굵게 -->
-      <button
-        @click="toggleBold"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <button @click="toggleBold"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         굵게
       </button>
 
       <!-- 기울임 -->
-      <button
-        @click="toggleItalic"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <button @click="toggleItalic"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         기울임
       </button>
 
       <!-- 밑줄 -->
-      <button
-        @click="toggleUnderline"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <button @click="toggleUnderline"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         밑줄
       </button>
 
       <!-- 하이라이트 -->
-      <button
-        @click="toggleHighlight"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <button @click="toggleHighlight"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         하이라이트
       </button>
 
-            <!-- 코드 -->
-      <button
-        @click="toogleCodeBlock"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <!-- 코드 -->
+      <button @click="toogleCodeBlock"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         코드
       </button>
 
       <!-- 태스크 리스트 -->
-      <button
-        @click="addTaskList"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <button @click="addTaskList"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         태스크 리스트
       </button>
 
       <!-- 이미지 업로드 -->
-      <input
-        type="file"
-        class="hidden"
-        ref="fileInput"
-        @change="handleFileUpload"
-        accept="image/*"
-      />
-      <button
-        @click="triggerFileUpload"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-      >
+      <input type="file" class="hidden" ref="fileInput" @change="handleFileUpload" accept="image/*" />
+      <button @click="triggerFileUpload"
+        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all">
         이미지 업로드
       </button>
     </div>
 
-        <!-- Tiptap Editor -->
+    <!-- Tiptap Editor -->
     <div class="mb-6 border border-gray-300 rounded shadow-sm max-h-[400px] min-h-[400px] overflow-y-auto">
-      <editor-content
-        :editor="editor"
-        class="w-full h-full text-base p-3"
-      />
+      <editor-content :editor="editor" class="w-full h-full text-base p-3" />
     </div>
 
 
     <!-- 등록 버튼 -->
-    <button
-      @click="submitPost"
-      class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded font-semibold shadow transition-all focus:outline-none focus:ring-0"
-    >
+    <button @click="submitPost"
+      class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded font-semibold shadow transition-all focus:outline-none focus:ring-0">
       글 등록
     </button>
   </div>
@@ -148,7 +111,7 @@ import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import CodeBlock from '@tiptap/extension-code-block';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
-import {common, createLowlight} from 'lowlight'
+import { common, createLowlight } from 'lowlight'
 import javascript from 'highlight.js/lib/languages/javascript';
 import java from 'highlight.js/lib/languages/java';
 import html from 'highlight.js/lib/languages/xml'; // HTML/XML
@@ -158,6 +121,12 @@ import Placeholder from '@tiptap/extension-placeholder';
 const props = defineProps<{
   mode: 'blog' | 'project';
 }>();
+
+// TipTap 에디터의 첫 번째 이미지 추출 함수
+const extractFirstImage = (html: string): string | null => {
+  const match = html.match(/<img[^>]+src="([^">]+)"/);
+  return match ? match[1] : null;
+};
 
 // 폼 데이터
 const title = ref('');
@@ -192,7 +161,7 @@ const editor = useEditor({
     StarterKit.configure({
       codeBlock: false,
     }),              // 기본 텍스트 편집 기능
-     Placeholder.configure({
+    Placeholder.configure({
       placeholder: '내용을 입력하세요...',
     }),
     CodeBlockLowlight.configure({
@@ -304,14 +273,21 @@ const submitPost = async () => {
     return;
   }
 
-  const content = editor.value.getHTML(); // Tiptap에서 작성한 HTML 콘텐츠
+  const content = editor.value.getHTML(); // TipTap에서 작성한 HTML 콘텐츠
+
+  // 첫 번째 이미지 URL 추출
+  const firstImage = extractFirstImage(content);
+  if (!thumbnail.value && firstImage) {
+    thumbnail.value = firstImage; // 썸네일이 없을 경우 첫 번째 이미지로 자동 설정
+  }
+
   const requestDto = {
-    categoryId: categoryId.value,       // categoryId 바인딩
-    tagIds: tagIds.value,               // 선택된 태그 ID들
-    thumbnail: thumbnail.value,         // 썸네일
-    title: title.value,                 // 제목
-    content,                            // 에디터 내용
-    imageUrls: imageUrls.value,         // 이미지 URL 배열
+    categoryId: categoryId.value,
+    tagIds: tagIds.value,
+    thumbnail: thumbnail.value, // 자동 설정된 썸네일 값
+    title: title.value,
+    content,
+    imageUrls: imageUrls.value,
   };
 
   const config = useRuntimeConfig();
@@ -345,6 +321,7 @@ const submitPost = async () => {
     alert('글 생성 중 오류가 발생했습니다.');
   }
 };
+
 
 
 
