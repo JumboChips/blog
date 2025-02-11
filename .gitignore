@@ -1,5 +1,39 @@
+# macOS 관련 불필요한 파일
+.DS_Store
+._*
+
+# Node.js (npm/yarn) 관련 불필요한 파일
 node_modules/
-blog_fe/node_modules/
-blog_be/target/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor 관련 파일
 .idea/
 .vscode/
+*.swp
+
+# 환경 변수 및 민감한 정보
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# 빌드 결과물 (Spring Boot, React, Vue, Nuxt)
+target/
+dist/
+build/
+out/
+
+# Docker 관련 파일
+docker-compose.override.yml
+*.tar
