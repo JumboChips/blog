@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +52,7 @@ public class SecurityConfig {
 
                                 config.setAllowCredentials(true);
                                 config.addAllowedOriginPattern("*");
-                                config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+				config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://jumbochips.com", "https://jumbochips.com"));
                                 config.setAllowedMethods(Collections.singletonList("*"));
                                 config.setAllowedHeaders(Collections.singletonList("*"));
                                 config.setAllowCredentials(true);
