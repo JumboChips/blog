@@ -5,11 +5,14 @@ on:
     branches:
       - main  # main 브랜치에 푸시되면 실행
   pull_request:
+    types:
+      - closed  # PR이 'closed' 상태일 때 실행
     branches:
-      - main  # dev -> main 머지 시 실행
+      - main  # main 브랜치로 머지된 경우만 실행
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true  # PR이 merge된 경우에만 실행
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +27,9 @@ jobs:
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Debug SSH Key
+        run: ls -la ~/.ssh && cat ~/.ssh/id_rsa | wc -l
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@master
