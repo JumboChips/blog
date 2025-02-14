@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main  # main 브랜치에 푸시되면 실행
+  pull_request:
+    branches:
+      - main # dev -> main 으로 머지할 때 실행
 
 jobs:
   deploy:
@@ -12,6 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Debug SSH Key
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" | wc -l
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@master
