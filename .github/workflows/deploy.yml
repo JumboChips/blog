@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main # main 브랜치에 push가 발생하면 실행
+      - main  # main 브랜치에 push 시 실행
 
 jobs:
   deploy:
@@ -18,18 +18,21 @@ jobs:
       - name: Set up SSH Key
         env:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SERVER_IP }}  # 도메인 또는 IP
         run: |
           mkdir -p ~/.ssh
           echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
       - name: Deploy to Server
+        env:
+          SSH_HOST: ${{ secrets.SERVER_IP }}
+          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ~/project/blog
-            git pull origin main
-            docker-compose down
-            docker-compose up -d --build
-            docker system prune -f
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+            cd /home/$SSH_USER/project/blog  # 프로젝트 디렉토리 이동
+            git pull origin main  # 최신 코드 가져오기
+            chmod +x deploy.sh
+            ./deploy.sh  # 배포 스크립트 실행
           EOF
