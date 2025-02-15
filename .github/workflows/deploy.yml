@@ -3,28 +3,25 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main  # main 브랜치에 push될 때 실행
+      - main  # main 브랜치에 푸시될 때 실행
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key and Connect to Server
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-
-      - name: Deploy to Server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd ~/project/blog  # 프로젝트 디렉토리 이동
-            git pull origin main  # 최신 코드 가져오기
-            chmod +x deploy.sh
-            ./deploy.sh  # 배포 스크립트 실행
-          EOF
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/project/blog
+            git pull origin main
+            docker-compose down
+            docker-compose up -d --build
+            docker system prune -f
