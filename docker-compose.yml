@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0.41
+    image: mysql:8.0
     container_name: mysql_container
     restart: always
     environment:
@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASS}
     ports:
@@ -42,6 +42,8 @@ services:
       - backend
     env_file:
       - .env
+    environment:
+      API_BASE_URL: "https://jumbochips.com/api/v1"  # API 백엔드 URL 설정
     ports:
       - "3000:3000"
     networks:
