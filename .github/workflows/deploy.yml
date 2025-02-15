@@ -3,43 +3,33 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시되면 실행
-  pull_request:
-    types:
-      - closed  # PR이 'closed' 상태일 때 실행
-    branches:
-      - main  # main 브랜치로 머지된 경우만 실행
+      - main # main 브랜치에 push가 발생하면 실행
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true  # PR이 merge된 경우에만 실행
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Setup SSH Key
+      - name: Set up SSH Key
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" | base64 --decode > ~/.ssh/id_rsa
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Debug SSH Key
-        run: ls -la ~/.ssh && cat ~/.ssh/id_rsa | wc -l
-
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+      - name: Deploy to Server
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ~/project/blog
             git pull origin main
             docker-compose down
             docker-compose up -d --build
             docker system prune -f
+          EOF
