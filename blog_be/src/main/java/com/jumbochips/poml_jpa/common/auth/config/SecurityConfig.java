@@ -52,7 +52,7 @@ public class SecurityConfig {
 
                                 config.setAllowCredentials(true);
                                 config.addAllowedOriginPattern("*");
-				config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://jumbochips.com", "https://jumbochips.com"));
+				                config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://jumbochips.com", "https://jumbochips.com"));
                                 config.setAllowedMethods(Collections.singletonList("*"));
                                 config.setAllowedHeaders(Collections.singletonList("*"));
                                 config.setAllowCredentials(true);
