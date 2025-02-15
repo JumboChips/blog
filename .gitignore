@@ -37,3 +37,6 @@ out/
 # Docker 관련 파일
 docker-compose.override.yml
 *.tar
+
+# upload 폴더
+blog/

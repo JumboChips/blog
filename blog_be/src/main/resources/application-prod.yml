@@ -1,13 +1,20 @@
 # 공통 설정
 server:
-  port: 8080 # 애플리케이션이 실행될 포트 번호
+  port: 443  # HTTPS 기본 포트
   address: 0.0.0.0  # 외부에서 접근 가능하게 설정
+  ssl:
+    enabled: true
+    key-store: /etc/letsencrypt/live/jumbochips.com/fullchain.pem  # SSL 인증서 경로
+    key-store-type: PEM
+    key-store-password: ""  # Let’s Encrypt는 비밀번호 필요 없음
+    key-alias: tomcat
+    key-password: ""
 
 spring:
   application:
     name: blog # 애플리케이션 이름
   datasource:
-    url: jdbc:mysql://172.18.0.2:3306/blog?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://db:3306/blog?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 0409
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,7 +29,7 @@ spring:
 
 # 서버 설정
 cors:
-  allowed-origins: "http://220.72.121.19:3000"
+  allowed-origins: "https://jumbochips.com"
   allowed-methods: "GET, POST, PUT, DELETE, OPTIONS"
 
 # 로그 설정
@@ -36,7 +43,7 @@ jwt:
   secret: gnCmhKlNBbPtwvdKNiid-G5GCGaR2UXfnqYK9soSAec=
 
 image:
-  base-upload-dir: /home/ubuntu/uploads
+  base-upload-dir: /Users/jumbochips/MyPrj/blog/blog/uploads
   upload-project-dir: project
   upload-blog-dir: blog
 
