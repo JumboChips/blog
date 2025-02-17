@@ -37,6 +37,8 @@ const authStore = useAuthStore();
 
 // 로그인 처리 함수
 const handleLogin = async (): Promise<void> => {
+  let response: any = null;
+
   try {
     const { data, error } = await useFetch('/login', {
       baseURL: useRuntimeConfig().public.apiBaseUrl,
@@ -48,26 +50,21 @@ const handleLogin = async (): Promise<void> => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      credentials: 'include'
+      credentials: 'include',
+      onResponse: (context) => {
+        response = context.response as Response;
+      }
     });
 
-    if (error.value) {
-      console.error('로그인 실패:', error.value);
-      return;
-    }
-
-    let token: string | null = null;
-
-    // JSON 응답에서 토큰 추출
-    if (data.value && data.value.token) {
-      token = data.value.token;
-    }
-
-    if (token) {
-      console.log('로그인 성공: 토큰 수신 =', token);
-      authStore.login(token); // Pinia 상태 업데이트
-    } else {
-      console.error('로그인 성공했지만 토큰을 찾을 수 없습니다.');
+    if (response) { // response가 null이 아닌 경우에만 처리
+      const authorizationHeader = response.headers.get('Authorization');
+      if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+        const token = authorizationHeader.split(' ')[1];
+        console.log('로그인 성공: 토큰 수신 = ', token);
+        authStore.login(token); // Pinia 상태 업데이트
+      } else {
+        console.error('로그인 성공했지만 토큰을 찾을 수 없습니다.');
+      }
     }
 
     // 이전 경로로 리다이렉트
@@ -75,10 +72,9 @@ const handleLogin = async (): Promise<void> => {
     localStorage.removeItem('redirectPath');
     router.push(redirectPath);
   } catch (error) {
-    console.error('로그인 처리 중 오류 발생:', error);
+    console.error('로그인 실패:', error);
   }
 };
-
 
 
 // 컴포넌트가 마운트될 때 실행 (localStorage 접근)
