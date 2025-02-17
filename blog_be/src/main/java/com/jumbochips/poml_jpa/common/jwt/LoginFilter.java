@@ -2,7 +2,6 @@ package com.jumbochips.poml_jpa.common.jwt;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,24 +50,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
         Long userId = customUserDetails.getUserId();
-
         String username = customUserDetails.getUsername();
-
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
-        Iterator<? extends GrantedAuthority> authoritiesIterator = authorities.iterator();
-        GrantedAuthority authority = authoritiesIterator.next();
+        String role = authorities.iterator().next().getAuthority();
 
-        String role = authority.getAuthority();
+        // JWT 생성
+        String token = jwtUtil.createJwtToken(username, role, userId, 60 * 60 * 1000L);
 
-        String token = jwtUtil.createJwtToken(username, role, userId, 60 * 60 * 100000000L);
+        // 기존 Authorization 헤더 유지
+        response.addHeader("Authorization", "Bearer " + token);
 
-        // JSON 형태로 응답 본문에 토큰 포함
+        // JSON 응답 추가 (클라이언트에서 직접 token 접근 가능)
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"token\":\"" + token + "\"}");
-
-        // Authorization 헤더에 Bearer 토큰 추가
-        response.addHeader("Authorization", "Bearer " + token);
+        response.getWriter().write("{\"token\":\"" + token + "\", \"userId\":" + userId + "}");
     }
 
     // 로그인 실패시 실행하는 메서드
