@@ -40,6 +40,11 @@ const handleLogin = async (): Promise<void> => {
   let response: any = null;
 
   try {
+    console.log("🔄 로그인 요청 시작");
+
+    const apiUrl = useRuntimeConfig().public.apiBaseUrl + '/login';
+    console.log("📡 API 요청 URL:", apiUrl);
+
     const { data, error } = await useFetch('/login', {
       baseURL: useRuntimeConfig().public.apiBaseUrl,
       method: 'POST',
@@ -56,25 +61,44 @@ const handleLogin = async (): Promise<void> => {
       }
     });
 
-    if (response) { // response가 null이 아닌 경우에만 처리
-      const authorizationHeader = response.headers.get('Authorization');
-      if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
-        const token = authorizationHeader.split(' ')[1];
-        console.log('로그인 성공: 토큰 수신 = ', token);
-        authStore.login(token); // Pinia 상태 업데이트
-      } else {
-        console.error('로그인 성공했지만 토큰을 찾을 수 없습니다.');
-      }
+    console.log("✅ API 요청 완료");
+
+    // 응답이 존재하는지 확인
+    if (!response) {
+      console.error("❌ 응답 객체가 존재하지 않음!");
+      return;
+    }
+
+    console.log("📥 서버 응답 상태 코드:", response.status);
+    console.log("📥 서버 응답 헤더:", response.headers);
+    console.log("📥 서버 응답 데이터:", data.value);
+
+    // Authorization 헤더 확인
+    const authorizationHeader = response.headers.get('Authorization');
+    if (!authorizationHeader) {
+      console.error("❌ Authorization 헤더가 존재하지 않음");
+    } else {
+      console.log("🔐 Authorization 헤더:", authorizationHeader);
+    }
+
+    if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+      const token = authorizationHeader.split(' ')[1];
+      console.log("✅ 로그인 성공! 토큰 수신:", token);
+      authStore.login(token); // Pinia 상태 업데이트
+    } else {
+      console.error("⚠️ 로그인 성공했지만 토큰을 찾을 수 없습니다.");
     }
 
     // 이전 경로로 리다이렉트
     const redirectPath = localStorage.getItem('redirectPath') || '/';
     localStorage.removeItem('redirectPath');
+    console.log("🔄 리다이렉트 경로:", redirectPath);
     router.push(redirectPath);
   } catch (error) {
-    console.error('로그인 실패:', error);
+    console.error("🚨 로그인 요청 중 오류 발생:", error);
   }
 };
+
 
 
 // 컴포넌트가 마운트될 때 실행 (localStorage 접근)
