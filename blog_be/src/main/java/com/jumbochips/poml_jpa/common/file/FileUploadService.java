@@ -55,7 +55,8 @@ public class FileUploadService implements UploadService {
             File dest = new File(filePath);
             file.transferTo(dest);
 
-            String urlPath = "uploads/" + uploadDir + "/" + dateFolder.replace(File.separator, "/") + "/" + newFileName;
+            String serverDomain = "https://jumbochips.com";
+            String urlPath = serverDomain + "/uploads/" + uploadDir + "/" + dateFolder.replace(File.separator, "/") + "/" + newFileName;
             return urlPath;
 
             // 브라우저 접근 가능한 URL 추가
