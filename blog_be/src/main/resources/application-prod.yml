@@ -36,7 +36,7 @@ jwt:
   secret: gnCmhKlNBbPtwvdKNiid-G5GCGaR2UXfnqYK9soSAec=
 
 image:
-  base-upload-dir: /home/jumbochips/project/blog/uploads
+  base-upload-dir: ${IMAGE_UPLOAD_DIR:/uploads}
   upload-project-dir: project
   upload-blog-dir: blog
 

@@ -30,8 +30,14 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String uploadDir = System.getenv("IMAGE_UPLOAD_DIR"); // 환경변수에서 가져오기
+        if (uploadDir == null || uploadDir.isEmpty()) {
+            uploadDir = "/uploads";  // 기본값 설정
+        }
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + baseUploadDir + "/");
+                .addResourceLocations("file:" + uploadDir + "/");
     }
+
 
 }
