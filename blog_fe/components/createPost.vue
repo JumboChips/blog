@@ -245,7 +245,7 @@ const uploadImage = async (file: File): Promise<string> => {
       },
     });
 
-    return `${config.public.apiBaseUrl}/${response[0]}`;
+    return `${UPLOADS_BASE_URL}/${response[0]}`;
   } catch (error) {
     console.error('이미지 업로드 실패:', error);
     throw new Error('이미지 업로드 실패');
