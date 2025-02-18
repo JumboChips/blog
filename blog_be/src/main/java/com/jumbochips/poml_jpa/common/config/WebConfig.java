@@ -30,8 +30,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String uploadPath = "file:/home/jumbochips/project/blog/uploads/";
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + baseUploadDir + "/");
+                .addResourceLocations(uploadPath);
+
+        System.out.println("Static resource handler mapped to: " + uploadPath);
     }
+
 
 }
