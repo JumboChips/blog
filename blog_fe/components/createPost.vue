@@ -17,7 +17,7 @@
       <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
       <select id="category" v-model="categoryId"
         class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all">
-        <option value="1">Test Category</option>
+        <option value="1">None</option>
       </select>
     </div>
 
@@ -190,6 +190,7 @@ const editor = useEditor({
   editorProps: {
     attributes: {
       class: "flex-1 w-full h-full p-3 focus:outline-none",
+      tabIndex: "0", // 추가하여 전체 박스 클릭 가능하도록 만듦
     },
   },
 });
