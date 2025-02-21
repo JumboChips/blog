@@ -120,7 +120,29 @@ import Placeholder from '@tiptap/extension-placeholder';
 
 const props = defineProps<{
   mode: 'blog' | 'project';
+  postId: number;
 }>();
+
+
+// **DTO 타입 정의**
+interface BlogResponseDto {
+  blogId: number;
+  categoryId: number;
+  thumbnail: string;
+  title: string;
+  content: string;
+  tagIds: number[];
+}
+
+interface ProjectResponseDto {
+  projectId: number;
+  categoryId: number;
+  thumbnail: string;
+  title: string;
+  content: string;
+  tagIds: number[];
+}
+
 
 // TipTap 에디터의 첫 번째 이미지 추출 함수
 const extractFirstImage = (html: string): string | null => {
@@ -134,7 +156,7 @@ const thumbnail = ref('');
 const categoryId = ref<number>(1); // Default to "Test Category"
 const tagIds = ref<number[]>([]);
 const availableTags = ref([
-  { id: 1, name: 'None' },
+  { id: 1, name: 'None'},
 ]); // Default tag list
 
 const authStore = useAuthStore();
@@ -202,6 +224,8 @@ const toggleHighlight = () => editor.value?.chain().focus().toggleHighlight().ru
 const addTaskList = () => editor.value?.chain().focus().toggleTaskList().run();
 const toogleCodeBlock = () => editor.value?.chain().focus().toggleCodeBlock().run();
 
+// config
+const config = useRuntimeConfig();
 
 // 파일 업로드
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -261,69 +285,80 @@ const toggleTag = (tagId: number) => {
   }
 };
 
-// 글 등록
+// **등록/수정 요청**
 const submitPost = async () => {
-  if (!title.value.trim()) {
-    alert('제목을 입력하세요.');
+  if (!title.value.trim() || !editor.value?.getText().trim()) {
+    alert('제목과 내용을 입력하세요.');
     return;
   }
 
-  if (!editor.value?.getText().trim()) {
-    alert('내용을 입력하세요.');
-    return;
-  }
-
-  const content = editor.value.getHTML(); // TipTap에서 작성한 HTML 콘텐츠
-
-  // 첫 번째 이미지 URL 추출
-  const firstImage = extractFirstImage(content);
-  if (!thumbnail.value && firstImage) {
-    thumbnail.value = firstImage; // 썸네일이 없을 경우 첫 번째 이미지로 자동 설정
-  }
+  const content = editor.value.getHTML();
 
   const requestDto = {
     categoryId: categoryId.value,
     tagIds: tagIds.value,
-    thumbnail: thumbnail.value, // 자동 설정된 썸네일 값
+    thumbnail: thumbnail.value,
     title: title.value,
     content,
-    imageUrls: imageUrls.value,
   };
 
-  const config = useRuntimeConfig();
-  const url = props.mode === 'blog'
-    ? `${config.public.apiBaseUrl}/api/v1/blog`
-    : `${config.public.apiBaseUrl}/api/v1/project`;
-
   try {
-    const token = authStore.token;
-    const response = await $fetch<{ blogId?: number; projectId?: number; message: string }>(url, {
-      method: 'POST',
+    const apiUrl = props.mode === 'blog'
+      ? `${config.public.apiBaseUrl}/api/v1/blog${props.postId ? '/' + props.postId : ''}`
+      : `${config.public.apiBaseUrl}/api/v1/project${props.postId ? '/' + props.postId : ''}`;
+
+    const method = props.postId ? 'PUT' : 'POST';
+
+    const response: { blogId?: number; projectId?: number; message: string } = await $fetch(apiUrl, {
+      method,
       body: requestDto,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
+    alert(response.message);
+
+    // 글 작성 후 또는 수정 후 이동할 경로 설정
     if (props.mode === 'blog' && response.blogId) {
-      alert(response.message);
       router.push(`/blog/${response.blogId}`);
     } else if (props.mode === 'project' && response.projectId) {
-      alert(response.message);
       router.push(`/project/${response.projectId}`);
-    } else {
-      console.error('API 응답에서 올바른 ID를 찾을 수 없습니다:', response);
-      throw new Error('Response에서 올바른 ID를 찾을 수 없습니다.');
     }
   } catch (error) {
-    console.error('글 생성 실패:', error);
-    alert('글 생성 중 오류가 발생했습니다.');
+    console.error('글 저장 중 오류 발생:', error);
+    alert('글 저장 중 오류가 발생했습니다.');
   }
 };
 
+// **기존 게시물 불러오기**
+const fetchPostData = async () => {
+  if (!props.postId) return;
 
+  try {
+    const apiUrl = props.mode === 'blog'
+      ? `${config.public.apiBaseUrl}/api/v1/blog/${props.postId}`
+      : `${config.public.apiBaseUrl}/api/v1/project/${props.postId}`;
 
+    const response: BlogResponseDto | ProjectResponseDto = await $fetch(apiUrl, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
 
+    title.value = response.title;
+    categoryId.value = response.categoryId;
+    tagIds.value = response.tagIds;
+    thumbnail.value = response.thumbnail;
+    editor.value?.commands.setContent(response.content);
+  } catch (error) {
+    console.error('게시물을 불러오는 중 오류 발생:', error);
+    alert('게시물을 불러오는 중 오류가 발생했습니다.');
+  }
+};
+
+// **초기 데이터 로드**
+onMounted(() => {
+  if (props.postId) {
+    fetchPostData();
+  }
+});
 
 </script>
