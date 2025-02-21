@@ -57,7 +57,7 @@ const props = defineProps<{
 
 // basePath 및 createPath를 동적으로 설정
 const basePath = `/${props.mode}`;
-const createPath = `/${props.mode}/post/create`;
+const createPath = `/${props.mode}/post`;
 
 // 드롭다운 상태
 const openMenuId = ref<number | null>(null);
