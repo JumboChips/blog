@@ -8,5 +8,5 @@ import editPost from '~/components/editPost.vue';
 
 // URL에서 ID 가져오기
 const route = useRoute();
-const postId = Number(route.query.id);
+const postId = Number(route.params.projectId);
 </script>
