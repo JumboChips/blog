@@ -1,16 +1,25 @@
 package com.jumbochips.poml_jpa.project.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.jumbochips.poml_jpa.common.auth.dto.CustomUserDetails;
 import com.jumbochips.poml_jpa.project.dto.ProjectRequestDto;
 import com.jumbochips.poml_jpa.project.dto.ProjectResponseDto;
 import com.jumbochips.poml_jpa.project.service.ProjectService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/project")
@@ -41,8 +50,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectResponseDto> createProject(
             @RequestBody ProjectRequestDto projectRequestDto,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-            ) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             // userDetails가 null인지 확인
             if (userDetails == null) {
@@ -59,12 +67,12 @@ public class ProjectController {
         }
     }
 
-    @PutMapping("{projectdId}")
+    @PutMapping("{projectId}")
     public ResponseEntity<ProjectResponseDto> updateProject(
-            @PathVariable Long projectdId,
+            @PathVariable Long projectId,
             @RequestBody ProjectRequestDto projectRequestDto) {
         try {
-            ProjectResponseDto project = projectService.updateProject(projectdId, projectRequestDto);
+            ProjectResponseDto project = projectService.updateProject(projectId, projectRequestDto);
             return ResponseEntity.ok(project);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

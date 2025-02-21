@@ -329,7 +329,6 @@ const submitPost = async () => {
   }
 };
 
-// **기존 게시물 불러오기**
 const fetchPostData = async () => {
   if (!props.postId) return;
 
@@ -338,11 +337,16 @@ const fetchPostData = async () => {
       ? `${config.public.apiBaseUrl}/api/v1/blog/${props.postId}`
       : `${config.public.apiBaseUrl}/api/v1/project/${props.postId}`;
 
+    console.log("Fetching post data from:", apiUrl); // 디버깅용
+
     const response: BlogResponseDto | ProjectResponseDto = await $fetch(apiUrl, {
       method: 'GET',
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
+    console.log("Fetched post data:", response); // 디버깅용
+
+    // 데이터 반영
     title.value = response.title;
     categoryId.value = response.categoryId;
     tagIds.value = response.tagIds;
@@ -354,7 +358,12 @@ const fetchPostData = async () => {
   }
 };
 
-// **초기 데이터 로드**
+// `props.postId` 값이 변경될 때 데이터를 불러오기
+watch(() => props.postId, (newId) => {
+  if (newId) fetchPostData();
+});
+
+// 초기 로드 시 데이터 가져오기
 onMounted(() => {
   if (props.postId) {
     fetchPostData();
