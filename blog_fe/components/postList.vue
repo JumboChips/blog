@@ -82,7 +82,7 @@ const handleEditPost = (id: number) => {
     return;
   }
 
-  router.push(`/${props.mode}/${postId}/edit`);
+  router.push(`/${props.mode}/${id}/edit`);
 };
 
 // 삭제 기능
