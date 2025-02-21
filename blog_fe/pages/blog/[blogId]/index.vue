@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div v-if="pending">Loading blog...</div>
-    <PostDetail v-else-if="blog" :post="blog" />
-    <div v-else-if="error">Error loading blog.</div>
+    <PostDetail v-if="blog" :post="blog" mode="blog" />
+    <p v-else>로딩 중...</p>
   </div>
 </template>
 
@@ -10,11 +9,17 @@
 import PostDetail from '@/components/postDetail.vue';
 import { useAsyncData, useRoute } from 'nuxt/app';
 
-// 동적 라우트 파라미터 가져오기
 const route = useRoute();
 
-// useAsyncData에 비동기 함수 전달
-const { data: blog, error, pending } = useAsyncData(async () => {
+// useAsyncData의 반환 타입 지정
+const { data: blog, error, pending } = useAsyncData<{ 
+  blogId?: number; 
+  projectId?: number; 
+  categoryId: number; 
+  thumbnail: string; 
+  title: string; 
+  content: string; 
+} | null>(async () => {
   const blogId = route.params.blogId;
   return await $fetch(`/api/v1/blog/${blogId}`, {
     baseURL: useRuntimeConfig().public.apiBaseUrl,
