@@ -76,7 +76,15 @@ const editPost = () => {
     alert("권한이 없습니다.");
     return;
   }
+
   const postId = props.mode === 'blog' ? props.post.blogId : props.post.projectId;
+
+  if (!postId) {
+    alert("게시글 ID가 존재하지 않습니다.");
+    console.error("게시글 ID가 존재하지 않아 편집 페이지로 이동할 수 없습니다.");
+    return;
+  }
+
   router.push(`/${props.mode}/${postId}/edit`);
 };
 

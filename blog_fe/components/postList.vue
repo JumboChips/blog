@@ -74,7 +74,15 @@ const handleEditPost = (id: number) => {
     alert("권한이 없습니다.");
     return;
   }
-  router.push(`/${props.mode}/${id}/edit`);
+
+  // 동적 경로로 이동 (blogId 또는 projectId)
+  const postId = props.mode === 'blog' ? id : id; // 여기서는 이미 전달된 id를 그대로 사용 가능
+  if (!postId) {
+    console.error("게시글 ID가 없습니다.");
+    return;
+  }
+
+  router.push(`/${props.mode}/${postId}/edit`);
 };
 
 // 삭제 기능
