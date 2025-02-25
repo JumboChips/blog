@@ -1,5 +1,5 @@
 <template>
-  <PostList mode="blog" :items="mappedBlogPosts" />
+  <PostList mode="blog" :items="mappedBlogPosts" @postDeleted="removePost" />
 </template>
 
 <script setup lang="ts">
@@ -36,6 +36,12 @@ const fetchBlogPosts = async () => {
     console.error('블로그 불러오기 실패:', error);
   }
 };
+
+// 삭제된 게시물 목록에서 제거
+const removePost = (id: number) => {
+  blogPosts.value = blogPosts.value.filter(post => post.blogId !== id);
+};
+
 
 onMounted(fetchBlogPosts);
 </script>
