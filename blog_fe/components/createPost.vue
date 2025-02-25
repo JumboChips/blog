@@ -307,10 +307,10 @@ const submitPost = async () => {
     });
 
     if (props.mode === 'blog' && response.blogId) {
-      alert(response.message);
+      alert("등록되었습니다.");
       router.push(`/blog/${response.blogId}`);
     } else if (props.mode === 'project' && response.projectId) {
-      alert(response.message);
+      alert("등록되었습니다.");
       router.push(`/project/${response.projectId}`);
     } else {
       console.error('API 응답에서 올바른 ID를 찾을 수 없습니다:', response);

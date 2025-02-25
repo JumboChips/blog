@@ -1,5 +1,5 @@
 <template>
-  <PostList mode="project" :items="mappedProjectPosts" />
+  <PostList mode="project" :items="mappedProjectPosts" @postDeleted="removePost" />
 </template>
 
 <script setup lang="ts">
@@ -36,6 +36,12 @@ const fetchProjectPosts = async () => {
     console.error('프로젝트 불러오기 실패:', error);
   }
 };
+
+// 삭제된 게시물 목록에서 제거
+const removePost = (id: number) => {
+  projectPosts.value = projectPosts.value.filter(post => post.projectId !== id);
+};
+
 
 onMounted(fetchProjectPosts);
 </script>

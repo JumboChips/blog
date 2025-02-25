@@ -315,7 +315,7 @@ const submitPost = async () => {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
 
-    alert(response.message);
+    alert("등록되었습니다.");
 
     // 글 작성 후 또는 수정 후 이동할 경로 설정
     if (props.mode === 'blog' && response.blogId) {

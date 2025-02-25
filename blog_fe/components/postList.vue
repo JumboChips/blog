@@ -85,6 +85,8 @@ const handleEditPost = (id: number) => {
   router.push(`/${props.mode}/${id}/edit`);
 };
 
+const emit = defineEmits(['postDeleted']);
+
 // 삭제 기능
 const handleDeletePost = async (id: number) => {
   if (!isLoggedIn) {
@@ -99,6 +101,10 @@ const handleDeletePost = async (id: number) => {
       method: 'DELETE',
       baseURL: useRuntimeConfig().public.apiBaseUrl,
     });
+
+    // 삭제 성공 후 이벤트 발생 (부모에서 반영)
+    emit('postDeleted', id);
+    
     alert("게시물이 삭제되었습니다.");
   } catch (error: any) {
     console.error("삭제 실패:", error);
