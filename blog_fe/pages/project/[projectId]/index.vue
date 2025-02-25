@@ -13,7 +13,6 @@ const route = useRoute();
 
 // useAsyncData의 반환 타입 지정
 const { data: project, error, pending } = useAsyncData<{ 
-  blogId?: number; 
   projectId?: number; 
   categoryId: number; 
   thumbnail: string; 
