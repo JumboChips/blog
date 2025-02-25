@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 import { useRuntimeConfig } from '#app';
 
@@ -59,11 +60,16 @@ const props = defineProps<{
   mode: 'blog' | 'project';
 }>();
 
-
+const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
 const showMenu = ref(false);
+
+// postId를 props에서 가져오거나, props에 없으면 route.params에서 가져오기
+const postId = computed(() => {
+  return props.post?.blogId || props.post?.projectId || route.params.blogId || route.params.projectId;
+});
 
 // 드롭다운 메뉴 토글
 const toggleMenu = () => {
@@ -77,15 +83,13 @@ const editPost = () => {
     return;
   }
 
-  const postId = props.mode === 'blog' ? props.post.blogId : props.post.projectId;
-
   if (!postId) {
     alert("게시글 ID가 존재하지 않습니다.");
     console.error("게시글 ID가 존재하지 않아 편집 페이지로 이동할 수 없습니다.");
     return;
   }
 
-  router.push(`/${props.mode}/${postId}/edit`);
+  router.push(`/${props.mode}/${postId.value}/edit`);
 };
 
 // 삭제 요청
