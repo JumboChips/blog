@@ -351,10 +351,10 @@ const fetchPostData = async () => {
     // 데이터 반영
     title.value = response.title;
     categoryId.value = response.categoryId;
-    tagIds.value = response.tagIds ?? []; // tagIds가 null이면 빈 배열로 처리
+    tagIds.value = response.tagIds ?? []; // 🚀 tagIds가 null이면 빈 배열로 처리
     thumbnail.value = response.thumbnail;
 
-    // editor가 완전히 로드된 후에 내용 삽입
+    // 🚀 editor가 완전히 로드된 후에 내용 삽입
     if (editor.value) {
       editor.value.commands.setContent(response.content);
     } else {
@@ -369,6 +369,7 @@ const fetchPostData = async () => {
     alert('게시물을 불러오는 중 오류가 발생했습니다.');
   }
 };
+
 
 
 // `props.postId` 값이 변경될 때 데이터를 불러오기
