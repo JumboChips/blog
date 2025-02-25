@@ -40,13 +40,6 @@ public class Blog {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blogCategory_id", nullable = false)
-    private BlogCategory category;
-
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BlogPostTag> blogPostTags = new ArrayList<>();
-
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -54,9 +47,6 @@ public class Blog {
     private LocalDateTime updatedAt;
 
     // 비즈니스 로직
-    public void updateCategory(BlogCategory category) {
-        this.category = category;
-    }
 
     public void updateTitle(String title) {
         this.title = title;

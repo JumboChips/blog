@@ -40,13 +40,6 @@ public class Project {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "projectCategory_id", nullable = false)
-    private ProjectCategory category;
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProjectPostTag> projectPostTags = new ArrayList<>();
-
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -54,10 +47,6 @@ public class Project {
     private LocalDateTime updatedAt;
 
     // 비즈니스 로직
-    public void updateCategory(ProjectCategory category) {
-        this.category = category;
-    }
-
     public void updateTitle(String title) {
         this.title = title;
     }
