@@ -302,6 +302,8 @@ const submitPost = async () => {
     content,
   };
 
+  console.log("보내는 데이터:", requestDto); // 🚀 디버깅용
+
   try {
     const apiUrl = props.mode === 'blog'
       ? `${config.public.apiBaseUrl}/api/v1/blog${props.postId ? '/' + props.postId : ''}`
