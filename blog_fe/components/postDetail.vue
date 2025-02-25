@@ -30,7 +30,6 @@
       <div class="text-container">
         <h1 class="title">{{ post.title }}</h1>
         <div class="meta-info">
-          <span class="category">📌 {{ post.categoryId }}</span>
           <span class="date">📅 {{ new Date().toLocaleDateString() }}</span>
         </div>
       </div>
@@ -52,7 +51,6 @@ const props = defineProps<{
   post: {
     blogId?: number;
     projectId?: number;
-    categoryId: number;
     thumbnail: string;
     title: string;
     content: string;

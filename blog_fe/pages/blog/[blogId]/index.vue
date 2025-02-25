@@ -14,7 +14,6 @@ const route = useRoute();
 // useAsyncData의 반환 타입 지정
 const { data: blog, error, pending } = useAsyncData<{ 
   blogId?: number; 
-  categoryId: number; 
   thumbnail: string; 
   title: string; 
   content: string; 
