@@ -5,7 +5,7 @@
         <div class="w-full lg:w-1/3 flex justify-center">
           <div
             class="aspect-square bg-gray-200 rounded-full h-64 w-64 sm:h-80 sm:w-80 lg:h-96 lg:w-96 flex items-center justify-center">
-            <img v-if="imageUrl" :src="'/profilePhoto.jpeg'" alt="프로필 이미지" class="rounded-full h-full w-full object-cover" />
+            <img v-if="imageUrl" :src="'/public/profilePhoto.jpeg'" alt="프로필 이미지" class="rounded-full h-full w-full object-cover" />
             <span v-else class="text-gray-400 text-lg sm:text-xl">이미지</span>
           </div>
         </div>
