@@ -113,19 +113,12 @@ public class DefaultProjectService implements ProjectService {
         ProjectCategory category = categoryRepository.findById(projectRequestDto.getCategoryId())
                         .orElseThrow(() -> new IllegalArgumentException("category not found"));
 
-
         // 기존 ProjectTag 삭제
         projectPostTagRepository.deleteByProjectId(projectId);
 
         // 새로운 태그 추가
         List<Long> tagIds = projectRequestDto.getTagIds();
         List<ProjectTag> tags = projectTagRepository.findAllById(tagIds);
-
-        System.out.println("🚀 projectRequestDto.getCategoryId(): " + projectRequestDto.getCategoryId());
-        System.out.println("🚀 projectRequestDto.getTagIds(): " + projectRequestDto.getTagIds());
-        System.out.println("🚀 projectRequestDto.getTitle(): " + projectRequestDto.getTitle());
-        System.out.println("🚀 projectRequestDto.getContent(): " + projectRequestDto.getContent());
-
 
         List<ProjectPostTag> newProjectTags = tags.stream()
                 .map(tag -> ProjectPostTag.builder()
@@ -138,6 +131,7 @@ public class DefaultProjectService implements ProjectService {
 
         project.updateTitle(projectRequestDto.getTitle());
         project.updateContent(projectRequestDto.getContent());
+        project.updateThumbnail(projectRequestDto.getThumbnail());
         project.updateCategory(category);
         projectRepository.save(project);
 

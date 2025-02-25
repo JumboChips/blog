@@ -75,7 +75,6 @@ public class ProjectController {
             ProjectResponseDto project = projectService.updateProject(projectId, projectRequestDto);
             return ResponseEntity.ok(project);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
