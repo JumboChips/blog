@@ -131,7 +131,6 @@ public class DefaultProjectService implements ProjectService {
 
         project.updateTitle(projectRequestDto.getTitle());
         project.updateContent(projectRequestDto.getContent());
-        project.updateThumbnail(projectRequestDto.getThumbnail());
         project.updateCategory(category);
         projectRepository.save(project);
 
