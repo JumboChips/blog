@@ -39,4 +39,4 @@ docker-compose.override.yml
 *.tar
 
 # upload 폴더
-blog/uploads/
+uploads/
