@@ -5,7 +5,7 @@
         <div class="w-full lg:w-1/3 flex justify-center">
           <div
             class="aspect-square bg-gray-200 rounded-full h-64 w-64 sm:h-80 sm:w-80 lg:h-96 lg:w-96 flex items-center justify-center">
-            <img v-if="imageUrl" :src="'/blog_fe/public/profilePhoto.jpeg'" alt="프로필 이미지" class="rounded-full h-full w-full object-cover" />
+            <img v-if="imageUrl" :src="'/profilePhoto.jpeg'" alt="프로필 이미지" class="rounded-full h-full w-full object-cover" />
             <span v-else class="text-gray-400 text-lg sm:text-xl">이미지</span>
           </div>
         </div>
@@ -48,20 +48,23 @@
       </section>
 
       <section class="mt-12 text-center">
-        <NuxtLink to="/aboutme" class="block w-full sm:w-auto">
-          <button class="w-full sm:w-auto px-6 py-3 text-white bg-black rounded hover:bg-gray-800 transition duration-300">
-            About me
-          </button>
+        <NuxtLink to="/aboutme">
+        <button
+          class="w-full sm:w-auto px-6 py-3 text-white bg-black rounded hover:bg-gray-800 transition duration-300">
+          About me
+        </button>
         </NuxtLink>
-        <NuxtLink to="/project" class="block w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
-          <button class="w-full sm:w-auto px-6 py-3 text-black border border-black rounded hover:bg-gray-100 transition duration-300">
-            프로젝트 보기
-          </button>
+        <NuxtLink to="/project">
+        <button
+          class="w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4 px-6 py-3 text-black border border-black rounded hover:bg-gray-100 transition duration-300">
+          프로젝트 보기
+        </button>
         </NuxtLink>
-        <NuxtLink to="/blog" class="block w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4">
-          <button class="w-full sm:w-auto px-6 py-3 text-black border border-black rounded hover:bg-gray-100 transition duration-300">
-            블로그 보기
-          </button>
+        <NuxtLink to="/blog">
+        <button
+          class="w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4 px-6 py-3 text-black border border-black rounded hover:bg-gray-100 transition duration-300">
+          블로그 보기
+        </button>
         </NuxtLink>
       </section>
     </div>
@@ -70,7 +73,7 @@
 <script setup lang="ts">
 defineProps({
   imageUrl: {
-    types: String,
+    type: String,
     required: false,
     default: ''
   }
