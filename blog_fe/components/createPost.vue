@@ -12,28 +12,6 @@
         placeholder="글 제목을 입력하세요" />
     </div>
 
-    <!-- 카테고리 선택 -->
-    <div class="mb-6">
-      <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
-      <select id="category" v-model="categoryId"
-        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all">
-        <option value="1">Test Category</option>
-      </select>
-    </div>
-
-    <!-- 태그 선택 -->
-    <div class="mb-6">
-      <label for="tags" class="block font-medium mb-1 text-gray-700">태그</label>
-      <div class="flex flex-wrap gap-2">
-        <button v-for="tag in availableTags" :key="tag.id" @click="toggleTag(tag.id)" :class="{
-          'bg-blue-500 text-white': tagIds.includes(tag.id),
-          'bg-gray-200 text-gray-700': !tagIds.includes(tag.id),
-        }" class="text-sm py-2 px-4 rounded focus:outline-none transition-all">
-          {{ tag.name }}
-        </button>
-      </div>
-    </div>
-
     <!-- 툴바 -->
     <div class="flex flex-wrap gap-3 mb-4">
       <!-- 굵게 -->
@@ -131,11 +109,6 @@ const extractFirstImage = (html: string): string | null => {
 // 폼 데이터
 const title = ref('');
 const thumbnail = ref('');
-const categoryId = ref<number>(1); // Default to "Test Category"
-const tagIds = ref<number[]>([]);
-const availableTags = ref([
-  { id: 1, name: 'None' },
-]); // Default tag list
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -252,15 +225,6 @@ const uploadImage = async (file: File): Promise<string> => {
   }
 };
 
-// 태그 선택 로직
-const toggleTag = (tagId: number) => {
-  if (tagIds.value.includes(tagId)) {
-    tagIds.value = tagIds.value.filter((id) => id !== tagId); // 선택 해제
-  } else {
-    tagIds.value.push(tagId); // 선택
-  }
-};
-
 // 글 등록
 const submitPost = async () => {
   if (!title.value.trim()) {
@@ -282,8 +246,6 @@ const submitPost = async () => {
   }
 
   const requestDto = {
-    categoryId: categoryId.value,
-    tagIds: tagIds.value,
     thumbnail: thumbnail.value, // 자동 설정된 썸네일 값
     title: title.value,
     content,
@@ -321,9 +283,6 @@ const submitPost = async () => {
     alert('글 생성 중 오류가 발생했습니다.');
   }
 };
-
-
-
 
 
 </script>
