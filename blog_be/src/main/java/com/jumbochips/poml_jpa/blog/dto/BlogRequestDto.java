@@ -11,8 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class BlogRequestDto {
     private Long userId;
-    private Long categoryId;
-    private List<Long> tagIds;
     private String thumbnail;
     private String title;
     private String content;
