@@ -215,6 +215,7 @@ const fetchCategoriesAndTags = async () => {
 
   // 카테고리 불러오기
   try {
+    console.log(categoryApiUrl);
     const categories = await $fetch<{ id: number; name: string }[]>(categoryApiUrl.value, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
@@ -229,6 +230,7 @@ const fetchCategoriesAndTags = async () => {
 
   // 태그 불러오기
   try {
+    console.log(tagApiUrl);
     const tags = await $fetch<{ id: number; name: string }[]>(tagApiUrl.value, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
