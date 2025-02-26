@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/blog/ct")
 @RequiredArgsConstructor
 public class BlogCategoryAndTagsController {
+
     private final BlogService blogService;
 
     @GetMapping("categories")
