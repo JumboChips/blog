@@ -17,7 +17,9 @@
       <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
       <select id="category" v-model="categoryId"
         class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all">
-        <option value="1">Test Category</option>
+        <option v-for="category in availableCategories" :key="category.id" :value="category.id">
+          {{ category.name }}
+        </option>
       </select>
     </div>
 
@@ -131,14 +133,15 @@ const extractFirstImage = (html: string): string | null => {
 // 폼 데이터
 const title = ref('');
 const thumbnail = ref('');
-const categoryId = ref<number>(1); // Default to "Test Category"
+const categoryId = ref<number | null>(null);
 const tagIds = ref<number[]>([]);
-const availableTags = ref([
-  { id: 1, name: 'None' },
-]); // Default tag list
+const availableCategories = ref<{ id: number; name: string }[]>([]);
+const availableTags = ref<{ id: number; name: string }[]>([]);
 
 const authStore = useAuthStore();
 const router = useRouter();
+const config = useRuntimeConfig();
+
 
 const lowlight = createLowlight();
 
@@ -202,6 +205,34 @@ const toggleHighlight = () => editor.value?.chain().focus().toggleHighlight().ru
 const addTaskList = () => editor.value?.chain().focus().toggleTaskList().run();
 const toogleCodeBlock = () => editor.value?.chain().focus().toggleCodeBlock().run();
 
+// 카테고리 및 태그 불러오기 함수
+const fetchCategoriesAndTags = async () => {
+  try {
+    const token = authStore.token;
+    
+    // API 호출
+    const [categories, tags] = await Promise.all([
+      $fetch<{ id: number; name: string }[]>(`${config.public.apiBaseUrl}/api/v1/categories`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }),
+      $fetch<{ id: number; name: string }[]>(`${config.public.apiBaseUrl}/api/v1/tags`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+    ]);
+
+    availableCategories.value = categories;
+    availableTags.value = tags;
+
+    // 기본 선택값 설정
+    if (categories.length > 0) {
+      categoryId.value = categories[0].id;
+    }
+
+  } catch (error) {
+    console.error('카테고리 및 태그 불러오기 실패:', error);
+  }
+};
+
 
 // 파일 업로드
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -226,7 +257,6 @@ const handleFileUpload = async (event: Event) => {
 
 // 이미지 업로드 함수
 const uploadImage = async (file: File): Promise<string> => {
-  const config = useRuntimeConfig();
   const imageUrl = props.mode === 'blog'
     ? `${config.public.apiBaseUrl}/api/v1/upload/file/blog`
     : `${config.public.apiBaseUrl}/api/v1/upload/file/project`;
@@ -322,8 +352,9 @@ const submitPost = async () => {
   }
 };
 
-
-
-
+// 컴포넌트가 마운트될 때 데이터 불러오기
+onMounted(() => {
+  fetchCategoriesAndTags();
+});
 
 </script>

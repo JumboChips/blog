@@ -17,10 +17,10 @@
           <div v-if="showMenu"
             class="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg pointer-events-auto">
             <button @click="editPost" class="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100">
-              ✏️ 편집
+              편집
             </button>
             <button @click="deletePost" class="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
-              🗑 삭제
+              삭제
             </button>
           </div>
         </div>
@@ -31,6 +31,15 @@
         <h1 class="title">{{ post.title }}</h1>
         <div class="meta-info">
           <span class="date">📅 {{ new Date().toLocaleDateString() }}</span>
+        </div>
+                <!-- 카테고리 및 태그 -->
+        <div class="mt-2 flex justify-center items-center flex-wrap gap-2">
+          <span v-if="post.category" class="px-3 py-1 text-sm font-semibold bg-gray-100 text-gray-800 rounded">
+            {{ post.category.name }}
+          </span>
+          <span v-for="tag in post.tags" :key="tag.id" class="px-3 py-1 text-sm font-semibold bg-blue-500 text-white rounded">
+            #{{ tag.name }}
+          </span>
         </div>
       </div>
     </div>
@@ -54,6 +63,8 @@ const props = defineProps<{
     thumbnail: string;
     title: string;
     content: string;
+    category?: { id: number; name: string };
+    tags?: Array<{ id: number; name: string }>;
   };
   mode: 'blog' | 'project';
 }>();
