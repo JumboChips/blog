@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/project/meta")  // 👈 새로운 네임스페이스 추가
+@RequestMapping("/api/v1/project/meta")  // 새로운 네임스페이스 추가
 @RequiredArgsConstructor
 public class ProjectCategoryAndTagsController {
     private final ProjectService projectService;
