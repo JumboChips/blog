@@ -19,7 +19,7 @@ import java.util.List;
 public class ProjectCategoryAndTagsController {
     private final ProjectService projectService;
 
-    @GetMapping("categories")
+    @GetMapping("/categories")
     public ResponseEntity<List<ProjectCategory>> getAllCategories() {
         try {
             List<ProjectCategory> categories = projectService.getAllCategories();
@@ -29,7 +29,7 @@ public class ProjectCategoryAndTagsController {
         }
     }
 
-    @GetMapping("tags")
+    @GetMapping("/tags")
     public ResponseEntity<List<ProjectTag>> getAllTags() {
         try {
             List<ProjectTag> tags = projectService.getAllTags();
