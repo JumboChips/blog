@@ -228,17 +228,20 @@ const toogleCodeBlock = () => editor.value?.chain().focus().toggleCodeBlock().ru
 // config
 const config = useRuntimeConfig();
 
-// 카테고리 및 태그 불러오기 함수
+// API URL 분기
+const categoryApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/categories`);
+const tagApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/tags`);
+
+// 카테고리 및 태그 불러오기
 const fetchCategoriesAndTags = async () => {
   try {
     const token = authStore.token;
     
-    // API 호출
     const [categories, tags] = await Promise.all([
-      $fetch<{ id: number; name: string }[]>(`${config.public.apiBaseUrl}/api/v1/categories`, {
+      $fetch<{ id: number; name: string }[]>(categoryApiUrl.value, {
         headers: { Authorization: `Bearer ${token}` }
       }),
-      $fetch<{ id: number; name: string }[]>(`${config.public.apiBaseUrl}/api/v1/tags`, {
+      $fetch<{ id: number; name: string }[]>(tagApiUrl.value, {
         headers: { Authorization: `Bearer ${token}` }
       })
     ]);
@@ -246,11 +249,10 @@ const fetchCategoriesAndTags = async () => {
     availableCategories.value = categories;
     availableTags.value = tags;
 
-    // 기본 선택값 설정
+    // 기본 선택값 설정 (가장 첫 번째 카테고리)
     if (categories.length > 0) {
       categoryId.value = categories[0].id;
     }
-
   } catch (error) {
     console.error('카테고리 및 태그 불러오기 실패:', error);
   }
