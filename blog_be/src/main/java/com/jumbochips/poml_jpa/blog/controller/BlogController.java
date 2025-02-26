@@ -94,24 +94,5 @@ public class BlogController {
         }
     }
 
-    @GetMapping("categories")
-    public ResponseEntity<List<BlogCategory>> getAllCategories() {
-        try {
-            blogService.getAllCategories();
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
 
-    }
-
-    @GetMapping("tags")
-    public ResponseEntity<List<BlogTag>> getAllTags() {
-        try {
-            blogService.getAllTags();
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }
