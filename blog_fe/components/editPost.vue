@@ -234,29 +234,34 @@ const tagApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mod
 
 // 카테고리 및 태그 불러오기
 const fetchCategoriesAndTags = async () => {
+  const token = authStore.token;
+
+  // 카테고리 불러오기
   try {
-    const token = authStore.token;
-    
-    const [categories, tags] = await Promise.all([
-      $fetch<{ id: number; name: string }[]>(categoryApiUrl.value, {
-        headers: { Authorization: `Bearer ${token}` }
-      }),
-      $fetch<{ id: number; name: string }[]>(tagApiUrl.value, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-    ]);
-
+    const categories = await $fetch<{ id: number; name: string }[]>(categoryApiUrl.value, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    });
     availableCategories.value = categories;
-    availableTags.value = tags;
-
-    // 기본 선택값 설정 (가장 첫 번째 카테고리)
     if (categories.length > 0) {
       categoryId.value = categories[0].id;
     }
   } catch (error) {
-    console.error('카테고리 및 태그 불러오기 실패:', error);
+    console.error('카테고리 불러오기 실패:', error);
+  }
+
+  // 태그 불러오기
+  try {
+    const tags = await $fetch<{ id: number; name: string }[]>(tagApiUrl.value, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    availableTags.value = tags;
+  } catch (error) {
+    console.error('태그 불러오기 실패:', error);
   }
 };
+
 
 // 파일 업로드
 const fileInput = ref<HTMLInputElement | null>(null);
