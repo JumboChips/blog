@@ -94,7 +94,7 @@ public class BlogController {
         }
     }
 
-    @GetMapping("/categories")
+    @GetMapping("categories")
     public ResponseEntity<List<BlogCategory>> getAllCategories() {
         try {
             blogService.getAllCategories();
@@ -105,7 +105,7 @@ public class BlogController {
 
     }
 
-    @GetMapping("/tags")
+    @GetMapping("tags")
     public ResponseEntity<List<BlogTag>> getAllTags() {
         try {
             blogService.getAllTags();
