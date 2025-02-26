@@ -12,4 +12,6 @@ public interface ProjectService {
     ProjectResponseDto createProject(ProjectRequestDto blogRequestDto);
     ProjectResponseDto updateProject(Long blogId, ProjectRequestDto blogRequestDto);
     ResponseEntity<?> deleteProject(Long blogId);
+    ResponseEntity<?> getAllCategories();
+    ResponseEntity<?> getAllTags();
 }

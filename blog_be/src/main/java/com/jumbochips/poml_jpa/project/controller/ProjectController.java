@@ -2,6 +2,8 @@ package com.jumbochips.poml_jpa.project.controller;
 
 import java.util.List;
 
+import com.jumbochips.poml_jpa.blog.domain.BlogCategory;
+import com.jumbochips.poml_jpa.blog.domain.BlogTag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -83,6 +85,27 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseDto> deleteProject(@PathVariable Long projectId) {
         try {
             projectService.deleteProject(projectId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<BlogCategory>> getAllCategories() {
+        try {
+            projectService.getAllCategories();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<BlogTag>> getAllTags() {
+        try {
+            projectService.getAllTags();
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

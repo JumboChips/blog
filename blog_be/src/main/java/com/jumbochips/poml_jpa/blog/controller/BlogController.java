@@ -1,10 +1,13 @@
 package com.jumbochips.poml_jpa.blog.controller;
 
+import com.jumbochips.poml_jpa.blog.domain.BlogCategory;
+import com.jumbochips.poml_jpa.blog.domain.BlogTag;
 import com.jumbochips.poml_jpa.blog.dto.BlogRequestDto;
 import com.jumbochips.poml_jpa.blog.dto.BlogResponseDto;
 import com.jumbochips.poml_jpa.blog.service.BlogService;
 import com.jumbochips.poml_jpa.common.auth.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -91,4 +94,24 @@ public class BlogController {
         }
     }
 
+    @GetMapping("/categories")
+    public ResponseEntity<List<BlogCategory>> getAllCategories() {
+        try {
+            blogService.getAllCategories();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @GetMapping("/tags")
+    public ResponseEntity<List<BlogTag>> getAllTags() {
+        try {
+            blogService.getAllTags();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

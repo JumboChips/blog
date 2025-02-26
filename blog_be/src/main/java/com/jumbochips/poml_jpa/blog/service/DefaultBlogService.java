@@ -23,6 +23,7 @@ public class DefaultBlogService implements BlogService {
     private final BlogTagRepository blogTagRepository;
     private final BlogPostTagRepository blogPostTagRepository;
     private final BlogImageRepository blogImageRepository;
+    private final BlogCategoryRepository blogCategoryRepository;
 
     @Override
     public List<BlogResponseDto> getAllBlog() {
@@ -147,6 +148,16 @@ public class DefaultBlogService implements BlogService {
     public ResponseEntity<?> deleteBlog(Long blogId) {
         blogRepository.deleteById(blogId);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<?> getAllCategories() {
+        return ResponseEntity.ok(blogCategoryRepository.findAll());
+    }
+
+    @Override
+    public ResponseEntity<?> getAllTags() {
+        return ResponseEntity.ok(blogTagRepository.findAll());
     }
 
 }
