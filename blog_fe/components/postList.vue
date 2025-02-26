@@ -31,6 +31,16 @@
           </div>
         </div>
 
+        <!-- 카테고리 및 태그 -->
+          <div class="mb-2 flex flex-wrap gap-2">
+            <span v-if="item.category" class="px-3 py-1 text-xs font-semibold bg-gray-200 text-gray-800 rounded">
+              {{ item.category.name }}
+            </span>
+            <span v-for="tag in item.tags" :key="tag.id" class="px-3 py-1 text-xs font-semibold bg-blue-500 text-white rounded">
+              #{{ tag.name }}
+            </span>
+          </div>
+
         <div class="p-4">
           <h2 class="mb-2 text-xl font-bold text-gray-900">{{ item.title }}</h2>
           <p class="line-clamp-3 text-gray-700">{{ extractTextFromHTML(item.description) }}</p>
@@ -52,7 +62,14 @@ const isLoggedIn = authStore.isLoggedIn;
 // props에서 받아온 게시물 리스트 및 mode 추가
 const props = defineProps<{
   mode: 'blog' | 'project';
-  items: Array<{ id: number; title: string; description: string; image: string }>;
+  items: Array<{ 
+    id: number; 
+    title: string; 
+    description: string; 
+    image: string; 
+    category?: { id: number; name: string }; 
+    tags?: Array<{ id: number; name: string }> 
+  }>;
 }>();
 
 // basePath 및 createPath를 동적으로 설정
