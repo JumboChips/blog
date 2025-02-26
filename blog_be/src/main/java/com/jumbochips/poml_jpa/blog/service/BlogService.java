@@ -12,4 +12,6 @@ public interface BlogService {
     BlogResponseDto createBlog(BlogRequestDto blogRequestDto);
     BlogResponseDto updateBlog(Long blogId, BlogRequestDto blogRequestDto);
     ResponseEntity<?> deleteBlog(Long blogId);
+    ResponseEntity<?> getAllCategories();
+    ResponseEntity<?> getAllTags();
 }
