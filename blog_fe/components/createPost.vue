@@ -17,9 +17,8 @@
       <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
       <select id="category" v-model="categoryId"
         class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all">
-        <option v-for="category in availableCategories" :key="category.id" :value="category.id">
-          {{ category.name }}
-        </option>
+        <option value="1">개발</option>
+        <option value="2">etc</option>
       </select>
     </div>
 
@@ -133,15 +132,14 @@ const extractFirstImage = (html: string): string | null => {
 // 폼 데이터
 const title = ref('');
 const thumbnail = ref('');
-const categoryId = ref<number | null>(null);
+const categoryId = ref<number>(1); // Default to "Test Category"
 const tagIds = ref<number[]>([]);
-const availableCategories = ref<{ id: number; name: string }[]>([]);
-const availableTags = ref<{ id: number; name: string }[]>([]);
+const availableTags = ref([
+  { id: 1, name: 'None' },
+]); // Default tag list
 
 const authStore = useAuthStore();
 const router = useRouter();
-const config = useRuntimeConfig();
-
 
 const lowlight = createLowlight();
 
@@ -205,43 +203,6 @@ const toggleHighlight = () => editor.value?.chain().focus().toggleHighlight().ru
 const addTaskList = () => editor.value?.chain().focus().toggleTaskList().run();
 const toogleCodeBlock = () => editor.value?.chain().focus().toggleCodeBlock().run();
 
-// API URL 분기
-const categoryApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/ct/categories`);
-const tagApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/ct/tags`);
-
-// 카테고리 및 태그 불러오기
-const fetchCategoriesAndTags = async () => {
-  const token = authStore.token;
-
-  // 카테고리 불러오기
-  try {
-    console.log(categoryApiUrl);
-    const categories = await $fetch<{ id: number; name: string }[]>(categoryApiUrl.value, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    availableCategories.value = categories;
-    if (categories.length > 0) {
-      categoryId.value = categories[0].id;
-    }
-  } catch (error) {
-    console.error('카테고리 불러오기 실패:', error);
-  }
-
-  // 태그 불러오기
-  try {
-    console.log(tagApiUrl);
-    const tags = await $fetch<{ id: number; name: string }[]>(tagApiUrl.value, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    availableTags.value = tags;
-  } catch (error) {
-    console.error('태그 불러오기 실패:', error);
-  }
-};
-
-
 
 // 파일 업로드
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -266,6 +227,7 @@ const handleFileUpload = async (event: Event) => {
 
 // 이미지 업로드 함수
 const uploadImage = async (file: File): Promise<string> => {
+  const config = useRuntimeConfig();
   const imageUrl = props.mode === 'blog'
     ? `${config.public.apiBaseUrl}/api/v1/upload/file/blog`
     : `${config.public.apiBaseUrl}/api/v1/upload/file/project`;
@@ -346,10 +308,10 @@ const submitPost = async () => {
     });
 
     if (props.mode === 'blog' && response.blogId) {
-      alert("등록되었습니다.");
+      alert(response.message);
       router.push(`/blog/${response.blogId}`);
     } else if (props.mode === 'project' && response.projectId) {
-      alert("등록되었습니다.");
+      alert(response.message);
       router.push(`/project/${response.projectId}`);
     } else {
       console.error('API 응답에서 올바른 ID를 찾을 수 없습니다:', response);
@@ -361,9 +323,8 @@ const submitPost = async () => {
   }
 };
 
-// 컴포넌트가 마운트될 때 데이터 불러오기
-onMounted(() => {
-  fetchCategoriesAndTags();
-});
+
+
+
 
 </script>
