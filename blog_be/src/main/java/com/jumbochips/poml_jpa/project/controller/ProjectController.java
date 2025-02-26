@@ -90,25 +90,4 @@ public class ProjectController {
             return ResponseEntity.badRequest().build();
         }
     }
-
-    @GetMapping("categories")
-    public ResponseEntity<List<BlogCategory>> getAllCategories() {
-        try {
-            projectService.getAllCategories();
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-    }
-
-    @GetMapping("tags")
-    public ResponseEntity<List<BlogTag>> getAllTags() {
-        try {
-            projectService.getAllTags();
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }
