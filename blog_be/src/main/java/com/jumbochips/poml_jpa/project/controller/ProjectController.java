@@ -91,7 +91,7 @@ public class ProjectController {
         }
     }
 
-    @GetMapping("/categories")
+    @GetMapping("categories")
     public ResponseEntity<List<BlogCategory>> getAllCategories() {
         try {
             projectService.getAllCategories();
@@ -102,7 +102,7 @@ public class ProjectController {
 
     }
 
-    @GetMapping("/tags")
+    @GetMapping("tags")
     public ResponseEntity<List<BlogTag>> getAllTags() {
         try {
             projectService.getAllTags();
