@@ -150,4 +150,14 @@ public class DefaultProjectService implements ProjectService {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public ResponseEntity<?> getAllCategories() {
+        return ResponseEntity.ok().body(categoryRepository.findAll());
+    }
+
+    @Override
+    public ResponseEntity<?> getAllTags() {
+        return ResponseEntity.ok().body(projectTagRepository.findAll());
+    }
+
 }
