@@ -151,13 +151,13 @@ public class DefaultBlogService implements BlogService {
     }
 
     @Override
-    public ResponseEntity<?> getAllCategories() {
-        return ResponseEntity.ok(blogCategoryRepository.findAll());
+    public List<BlogCategory> getAllCategories() {
+        return blogCategoryRepository.findAll();
     }
 
     @Override
-    public ResponseEntity<?> getAllTags() {
-        return ResponseEntity.ok(blogTagRepository.findAll());
+    public List<BlogTag> getAllTags() {
+        return blogTagRepository.findAll();
     }
 
 }

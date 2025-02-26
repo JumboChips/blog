@@ -1,5 +1,7 @@
 package com.jumbochips.poml_jpa.project.service;
 
+import com.jumbochips.poml_jpa.blog.domain.BlogCategory;
+import com.jumbochips.poml_jpa.blog.domain.BlogTag;
 import com.jumbochips.poml_jpa.project.domain.*;
 import com.jumbochips.poml_jpa.project.dto.ProjectRequestDto;
 import com.jumbochips.poml_jpa.project.dto.ProjectResponseDto;
@@ -23,6 +25,7 @@ public class DefaultProjectService implements ProjectService {
     private final ProjectTagRepository projectTagRepository;
     private final ProjectPostTagRepository projectPostTagRepository;
     private final ProjectImageRepository projectImageRepository;
+    private final ProjectCategoryRepository projectCategoryRepository;
 
     @Override
     public List<ProjectResponseDto> getAllProject() {
@@ -151,13 +154,13 @@ public class DefaultProjectService implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<?> getAllCategories() {
-        return ResponseEntity.ok().body(categoryRepository.findAll());
+    public List<ProjectCategory> getAllCategories() {
+        return projectCategoryRepository.findAll();
     }
 
     @Override
-    public ResponseEntity<?> getAllTags() {
-        return ResponseEntity.ok().body(projectTagRepository.findAll());
+    public List<ProjectTag> getAllTags() {
+        return projectTagRepository.findAll();
     }
 
 }
