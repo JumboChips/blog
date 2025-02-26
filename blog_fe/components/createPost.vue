@@ -206,8 +206,8 @@ const addTaskList = () => editor.value?.chain().focus().toggleTaskList().run();
 const toogleCodeBlock = () => editor.value?.chain().focus().toggleCodeBlock().run();
 
 // API URL 분기
-const categoryApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/meta/categories`);
-const tagApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/meta/tags`);
+const categoryApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/ct/categories`);
+const tagApiUrl = computed(() => `${config.public.apiBaseUrl}/api/v1/${props.mode}/ct/tags`);
 
 // 카테고리 및 태그 불러오기
 const fetchCategoriesAndTags = async () => {
