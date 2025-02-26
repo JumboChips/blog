@@ -1,5 +1,7 @@
 package com.jumbochips.poml_jpa.blog.service;
 
+import com.jumbochips.poml_jpa.blog.domain.BlogCategory;
+import com.jumbochips.poml_jpa.blog.domain.BlogTag;
 import com.jumbochips.poml_jpa.blog.dto.BlogRequestDto;
 import com.jumbochips.poml_jpa.blog.dto.BlogResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,6 @@ public interface BlogService {
     BlogResponseDto createBlog(BlogRequestDto blogRequestDto);
     BlogResponseDto updateBlog(Long blogId, BlogRequestDto blogRequestDto);
     ResponseEntity<?> deleteBlog(Long blogId);
-    ResponseEntity<?> getAllCategories();
-    ResponseEntity<?> getAllTags();
+    List<BlogCategory> getAllCategories();
+    List<BlogTag> getAllTags();
 }

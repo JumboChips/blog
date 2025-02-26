@@ -20,23 +20,23 @@ public class BlogCategoryAndTagsController {
     @GetMapping("categories")
     public ResponseEntity<List<BlogCategory>> getAllCategories() {
         try {
-            blogService.getAllCategories();
-            return ResponseEntity.ok().build();
+            List<BlogCategory> categories = blogService.getAllCategories();
+            return ResponseEntity.ok(categories);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-
     }
 
     @GetMapping("tags")
     public ResponseEntity<List<BlogTag>> getAllTags() {
         try {
-            blogService.getAllTags();
-            return ResponseEntity.ok().build();
+            List<BlogTag> tags = blogService.getAllTags();
+            return ResponseEntity.ok(tags);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
+
 
 
 }
