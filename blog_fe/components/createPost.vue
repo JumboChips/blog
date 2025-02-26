@@ -17,8 +17,7 @@
       <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
       <select id="category" v-model="categoryId"
         class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all">
-        <option value="1">개발</option>
-        <option value="2">etc</option>
+        <option value="1">Default</option>
       </select>
     </div>
 
@@ -135,7 +134,7 @@ const thumbnail = ref('');
 const categoryId = ref<number>(1); // Default to "Test Category"
 const tagIds = ref<number[]>([]);
 const availableTags = ref([
-  { id: 1, name: 'None' },
+  { id: 1, name: 'Default' },
 ]); // Default tag list
 
 const authStore = useAuthStore();
@@ -308,10 +307,10 @@ const submitPost = async () => {
     });
 
     if (props.mode === 'blog' && response.blogId) {
-      alert(response.message);
+      alert("등록되었습니다.");
       router.push(`/blog/${response.blogId}`);
     } else if (props.mode === 'project' && response.projectId) {
-      alert(response.message);
+      alert("등록되었습니다.");
       router.push(`/project/${response.projectId}`);
     } else {
       console.error('API 응답에서 올바른 ID를 찾을 수 없습니다:', response);
