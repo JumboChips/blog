@@ -132,6 +132,7 @@ public class DefaultBlogService implements BlogService {
 
         blog.updateTitle(blogRequestDto.getTitle());
         blog.updateContent(blogRequestDto.getContent());
+        blog.updateThumbnail(blogRequestDto.getThumbnail());
         blog.updateCategory(category);
         blogRepository.save(blog);
 
