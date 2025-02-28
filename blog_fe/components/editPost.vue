@@ -273,30 +273,24 @@ interface ProjectResponseDto {
 }
 
 // 폼 데이터
-const title = ref('')
-const thumbnail = ref('')
-const categoryId = ref<number>(1)
-const tagIds = ref<number[]>([])
-const availableTags = ref([{ id: 1, name: 'Default' }])
+const title = ref('');
+const thumbnail = ref('');
+const categoryId = ref<number>(1);
+const tagIds = ref<number[]>([]);
+const availableTags = ref([{ id: 1, name: 'Default' }]);
 
 // 메뉴 상태
-const showHeadingMenu = ref(false)
-const showListMenu = ref(false)
+const showHeadingMenu = ref(false);
+const showListMenu = ref(false);
 
 // 글자 크기
-const fontSize = ref(16)
+const fontSize = ref(16);
 
 // 파일 입력 참조
-const fileInput = ref<HTMLInputElement | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null);
 
 // 이미지 URL 배열
-const imageUrls = ref<string[]>([])
-
-const lowlight = createLowlight()
-lowlight.register('java', java)
-lowlight.register('javascript', javascript)
-lowlight.register('html', html)
-lowlight.register('css', css)
+const imageUrls = ref<string[]>([]);
 
 // Tiptap Editor 초기화
 const editor = new Editor({
@@ -336,12 +330,6 @@ const editor = new Editor({
     TaskList,
     TaskItem.configure({
       nested: true,
-    }),
-    CodeBlockLowlight.configure({
-      lowlight,
-      HTMLAttributes: {
-        class: 'tiptap-code-block',
-      },
     }),
   ],
   editorProps: {
@@ -533,7 +521,7 @@ const submitPost = async () => {
     })
 
     alert('수정되었습니다.')
-    router.push(props.mode === 'blog' ? `/blog/${props.postId}` : `/project/${props.postId}`)
+    navigateTo(props.mode === 'blog' ? `/blog/${props.postId}` : `/project/${props.postId}`)
   } catch (error) {
     console.error('글 수정 실패:', error)
     alert('글 수정 중 오류가 발생했습니다.')
