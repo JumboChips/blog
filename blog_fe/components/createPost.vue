@@ -258,25 +258,25 @@ const props = defineProps<{
 }>()
 
 // 폼 데이터
-const title = ref('')
-const thumbnail = ref('')
-const categoryId = ref<number>(1)
-const tagIds = ref<number[]>([])
-const availableTags = ref([{ id: 1, name: 'Default' }])
+const title = ref('');
+const thumbnail = ref('');
+const categoryId = ref<number>(1);
+const tagIds = ref<number[]>([]);
+const availableTags = ref([{ id: 1, name: 'Default' }]);
 
 // 메뉴 상태
-const showHeadingMenu = ref(false)
-const showSizeMenu = ref(false)
-const showListMenu = ref(false)
+const showHeadingMenu = ref(false);
+const showSizeMenu = ref(false);
+const showListMenu = ref(false);
 
 // 파일 입력 참조
-const fileInput = ref<HTMLInputElement | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null);
 
 // 이미지 URL 배열
-const imageUrls = ref<string[]>([])
+const imageUrls = ref<string[]>([]);
 
 // 기본 글자 크기
-const fontSize = ref(16) 
+const fontSize = ref(16);
 
 // Tiptap 에디터 설정
 const editor = new Editor({
@@ -510,9 +510,9 @@ const submitPost = async () => {
     : `${config.public.apiBaseUrl}/api/v1/project`
 
   try {
-    const authStore = useAuthStore()
-    const router = useRouter()
-    const token = authStore.token
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const token = authStore.token;
     
     const response = await $fetch<{ blogId?: number; projectId?: number; message: string }>(url, {
       method: 'POST',
@@ -525,10 +525,10 @@ const submitPost = async () => {
 
     if (props.mode === 'blog' && response.blogId) {
       alert('등록되었습니다.')
-      router.push(`/blog/${response.blogId}`)
+      navigateTo(`/blog/${response.blogId}`)
     } else if (props.mode === 'project' && response.projectId) {
       alert('등록되었습니다.')
-      router.push(`/project/${response.projectId}`)
+      navigateTo(`/project/${response.projectId}`)
     } else {
       throw new Error('Response에서 올바른 ID를 찾을 수 없습니다.')
     }
