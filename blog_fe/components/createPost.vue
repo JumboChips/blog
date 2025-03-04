@@ -251,6 +251,7 @@ import Image from '@tiptap/extension-image'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import TextStyle from '@tiptap/extension-text-style'
+import HardBreak from '@tiptap/extension-hard-break'
 import { Color } from '@tiptap/extension-color'
 
 const props = defineProps<{
@@ -285,6 +286,14 @@ const editor = new Editor({
       heading: {
         levels: [1, 2, 3],
       },
+      hardBreak: false,
+    }),
+    HardBreak.extend({
+      addKeyboardShortcuts() {
+        return {
+          Enter: ({editor}) => editor.commands.setHardBreak(),
+        }
+      }
     }),
     TextStyle,
     Color,
@@ -310,7 +319,7 @@ const editor = new Editor({
     types: ['heading', 'paragraph'],
     alignments: ['left', 'center', 'right'],
     defaultAlignment: 'left',
-  }),
+    }),
   ],
   editorProps: {
   attributes: {
