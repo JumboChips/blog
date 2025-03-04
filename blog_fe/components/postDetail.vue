@@ -45,7 +45,7 @@
     </div>
 
     <!-- 본문 콘텐츠 -->
-    <article v-html="post.content" class="prose prose-lg prose-gray max-w-4xl mx-auto p-6 text-gray-800"></article>
+    <article v-html="post.content" class="prose prose-lg prose-gray max-w-4xl mx-auto p-6 text-gray-800 bg-white"></article>
   </div>
 </template>
 

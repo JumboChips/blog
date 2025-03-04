@@ -703,7 +703,9 @@ watch(() => props.postId, (newId) => {
 
 /* 글자 크기 입력 스타일 */
 input[type="number"] {
-  -moz-appearance: textfield;
+  appearance: textfield;      /* 표준 속성 추가 */
+  -moz-appearance: textfield; /* Firefox 대응 */
+  -webkit-appearance: textfield; /* Safari, Chrome 대응 */
 }
 
 input[type="number"]::-webkit-outer-spin-button,

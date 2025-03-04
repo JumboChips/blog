@@ -573,6 +573,14 @@ onBeforeUnmount(() => {
   padding: 1rem;
 }
 
+/* 개행 표시 스타일 */
+.ProseMirror br {
+  display: block;
+  content: "";
+  margin-bottom: 12px;
+}
+
+
 /* 제목 스타일 */
 .ProseMirror h1 {
   font-size: 2.25rem !important;
@@ -691,7 +699,9 @@ onBeforeUnmount(() => {
 
 /* 글자 크기 입력 스타일 */
 input[type="number"] {
-  -moz-appearance: textfield;
+  appearance: textfield;      /* 표준 속성 추가 */
+  -moz-appearance: textfield; /* Firefox 대응 */
+  -webkit-appearance: textfield; /* Safari, Chrome 대응 */
 }
 
 input[type="number"]::-webkit-outer-spin-button,
