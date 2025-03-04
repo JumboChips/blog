@@ -240,13 +240,8 @@ import Image from '@tiptap/extension-image'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import TextStyle from '@tiptap/extension-text-style'
+import HardBreak from '@tiptap/extension-hard-break'
 import { Color } from '@tiptap/extension-color'
-import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
-import { common, createLowlight } from 'lowlight'
-import javascript from 'highlight.js/lib/languages/javascript'
-import java from 'highlight.js/lib/languages/java'
-import html from 'highlight.js/lib/languages/xml'
-import css from 'highlight.js/lib/languages/css'
 
 const props = defineProps<{
   mode: 'blog' | 'project'
@@ -292,24 +287,23 @@ const fileInput = ref<HTMLInputElement | null>(null);
 // 이미지 URL 배열
 const imageUrls = ref<string[]>([]);
 
-// Tiptap Editor 초기화
+// Tiptap 에디터 설정
 const editor = new Editor({
   extensions: [
     StarterKit.configure({
       heading: {
         levels: [1, 2, 3],
       },
-      paragraph: {
-        HTMLAttributes: {
-          class: 'paragraph-spacing',
-        },
-      },
+      hardBreak: false,
     }),
-    TextStyle.configure({
-      HTMLAttributes: {
-        class: 'custom-font-size',
-      },
+    HardBreak.extend({
+      addKeyboardShortcuts() {
+        return {
+          Enter: ({editor}) => editor.commands.setHardBreak(),
+        }
+      }
     }),
+    TextStyle,
     Color,
     Underline,
     Highlight.configure({
@@ -317,8 +311,6 @@ const editor = new Editor({
     }),
     TextAlign.configure({
       types: ['heading', 'paragraph'],
-      alignments: ['left', 'center', 'right'],
-      defaultAlignment: 'left',
     }),
     Link.configure({
       openOnClick: true,
@@ -331,24 +323,30 @@ const editor = new Editor({
     TaskItem.configure({
       nested: true,
     }),
+    TextAlign.configure({
+    types: ['heading', 'paragraph'],
+    alignments: ['left', 'center', 'right'],
+    defaultAlignment: 'left',
+    }),
   ],
   editorProps: {
-    attributes: {
-      class: 'prose prose-lg max-w-none focus:outline-none',
-    },
-    handleKeyDown: (view, event) => {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        const { selection } = view.state
-        const { empty, $head } = selection
-
-        if (empty && $head.parent.type.name === 'listItem' && $head.parent.textContent === '') {
-          editor.commands.liftListItem('listItem')
-          return true
-        }
-      }
-      return false
-    },
+  attributes: {
+    class: 'prose prose-lg max-w-none focus:outline-none',
   },
+  handleKeyDown: (view, event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      const { selection } = view.state
+      const { empty, $head } = selection
+
+      if (empty && $head.parent.type.name === 'listItem' && $head.parent.textContent === '') {
+        // editor 인스턴스 직접 참조
+        editor.commands.liftListItem('listItem')
+        return true
+      }
+    }
+    return false
+  },
+},
 })
 
 // 메뉴 토글 함수들
