@@ -48,6 +48,7 @@ public class Project {
     private List<ProjectPostTag> projectPostTags = new ArrayList<>();
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
