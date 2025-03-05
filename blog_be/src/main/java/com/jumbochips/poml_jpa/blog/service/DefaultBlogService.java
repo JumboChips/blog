@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,15 @@ public class DefaultBlogService implements BlogService {
     public BlogResponseDto getBlog(Long blogId) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
+
+        LocalDateTime createdAt = blog.getCreatedAt();
+        LocalDateTime updatedAt = blog.getUpdatedAt();
+
+        System.out.println("createdAt: " + createdAt);
+        System.out.println("updatedAt: " + updatedAt);
+
         return BlogResponseDto.builder()
+                .blogId(blog.getId())
                 .categoryId(blog.getCategory().getId())
                 .thumbnail(blog.getThumbnail())
                 .title(blog.getTitle())
