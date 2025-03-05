@@ -30,7 +30,8 @@
       <div class="text-container">
         <h1 class="title">{{ post.title }}</h1>
         <div class="meta-info">
-          <span class="date">📅 {{ new Date().toLocaleDateString() }}</span>
+          <span class="date">📅 {{ formatDate(post.createdAt) }}</span>
+          <span v-if="post.updatedAt !== post.createdAt" class="date">📝 수정일: {{ formatDate(post.updatedAt) }}</span>
         </div>
                 <!-- 카테고리 및 태그 -->
         <div class="mt-2 flex justify-center items-center flex-wrap gap-2">
@@ -65,9 +66,21 @@ const props = defineProps<{
     content: string;
     category?: { id: number; name: string };
     tags?: Array<{ id: number; name: string }>;
+    createdAt: string;
+    updatedAt: string;
   };
   mode: 'blog' | 'project';
 }>();
+
+const formatDate = (dateString: string | undefined) => {
+  if (!dateString) return "날짜 없음";
+  return new Date(dateString).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 
 const route = useRoute();
 const router = useRouter();

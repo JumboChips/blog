@@ -16,7 +16,9 @@ const { data: blog, error, pending } = useAsyncData<{
   blogId?: number; 
   thumbnail: string; 
   title: string; 
-  content: string; 
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 } | null>(async () => {
   const blogId = route.params.blogId;
   return await $fetch(`/api/v1/blog/${blogId}`, {
