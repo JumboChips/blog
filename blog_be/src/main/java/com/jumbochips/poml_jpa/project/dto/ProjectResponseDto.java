@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -18,5 +19,6 @@ public class ProjectResponseDto {
     private String title;
     private String content;
     private List<Long> tagIds; // 태그 ID 리스트
-
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
