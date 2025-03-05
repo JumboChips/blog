@@ -11,6 +11,7 @@
     "start": "nuxt start"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@tiptap/extension-character-count": "^2.11.2",
     "@tiptap/extension-code-block": "^2.11.2",
     "@tiptap/extension-code-block-lowlight": "^2.11.2",
