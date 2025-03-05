@@ -66,8 +66,8 @@ const props = defineProps<{
     content: string;
     category?: { id: number; name: string };
     tags?: Array<{ id: number; name: string }>;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
   };
   mode: 'blog' | 'project';
 }>();
