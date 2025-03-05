@@ -19,6 +19,11 @@ spring:
     properties:
       hibernate:
         format_sql: true # SQL 포맷 설정
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      adjust-dates-to-context-time-zone: false
 
 # 서버 설정
 cors:
