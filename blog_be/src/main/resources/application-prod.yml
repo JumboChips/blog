@@ -19,6 +19,7 @@ spring:
     properties:
       hibernate:
         format_sql: true # SQL 포맷 설정
+        jdbc.time_zone: Asia/Seoul
   mvc:
     static-path-pattern: /static/**
 
