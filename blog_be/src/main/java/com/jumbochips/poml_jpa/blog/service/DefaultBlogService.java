@@ -56,6 +56,8 @@ public class DefaultBlogService implements BlogService {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
+        System.out.println(blog);
+
         logger.info("createdAt: {}", blog.getCreatedAt());
         logger.info("createdAt: {}", blog.getCreatedAt());
 
