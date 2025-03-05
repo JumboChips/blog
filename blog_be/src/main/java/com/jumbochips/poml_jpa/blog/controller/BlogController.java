@@ -45,6 +45,7 @@ public class BlogController {
             System.out.println("Json 반환 결과" + json);
             return ResponseEntity.ok(blogResponseDto);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
