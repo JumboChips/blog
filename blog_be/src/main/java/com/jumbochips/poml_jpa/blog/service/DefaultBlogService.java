@@ -7,8 +7,11 @@ import com.jumbochips.poml_jpa.blog.dto.BlogRequestDto;
 import com.jumbochips.poml_jpa.user.domain.User;
 import com.jumbochips.poml_jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,9 +28,11 @@ public class DefaultBlogService implements BlogService {
     private final BlogPostTagRepository blogPostTagRepository;
     private final BlogImageRepository blogImageRepository;
     private final BlogCategoryRepository blogCategoryRepository;
+    private static final Logger logger = LoggerFactory.getLogger(BlogService.class);
 
     @Override
     public List<BlogResponseDto> getAllBlog() {
+
         List<Blog> blogs = blogRepository.findAll();
 
         return blogs.stream()
@@ -45,16 +50,14 @@ public class DefaultBlogService implements BlogService {
                 )).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public BlogResponseDto getBlog(Long blogId) {
         Blog blog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
-        LocalDateTime createdAt = blog.getCreatedAt();
-        LocalDateTime updatedAt = blog.getUpdatedAt();
-
-        System.out.println("createdAt: " + createdAt);
-        System.out.println("updatedAt: " + updatedAt);
+        logger.info("createdAt: {}", blog.getCreatedAt());
+        logger.info("createdAt: {}", blog.getCreatedAt());
 
         return BlogResponseDto.builder()
                 .blogId(blog.getId())
