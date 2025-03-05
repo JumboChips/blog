@@ -11,6 +11,7 @@ import com.jumbochips.poml_jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ public class DefaultProjectService implements ProjectService {
                 )).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public ProjectResponseDto getProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
