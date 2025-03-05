@@ -41,8 +41,8 @@ public class DefaultBlogService implements BlogService {
                         blog.getBlogPostTags().stream()
                                 .map(blogTag -> blogTag.getTag().getId())
                                 .toList(),
-                        blog.getCreatedAt(),
-                        blog.getUpdatedAt()
+                        blog.getCreatedAt().toString(),
+                        blog.getUpdatedAt().toString()
                 )).collect(Collectors.toList());
     }
 
@@ -58,8 +58,8 @@ public class DefaultBlogService implements BlogService {
                 .thumbnail(blog.getThumbnail())
                 .title(blog.getTitle())
                 .content(blog.getContent())
-                .createdAt(blog.getCreatedAt())
-                .updatedAt(blog.getUpdatedAt())
+                .createdAt(blog.getCreatedAt().toString())
+                .updatedAt(blog.getUpdatedAt().toString())
                 .build();
     }
 
