@@ -1,5 +1,6 @@
 package com.jumbochips.poml_jpa.blog.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jumbochips.poml_jpa.blog.domain.BlogCategory;
 import com.jumbochips.poml_jpa.blog.domain.BlogTag;
 import com.jumbochips.poml_jpa.blog.dto.BlogRequestDto;
@@ -35,8 +36,13 @@ public class BlogController {
     public ResponseEntity<BlogResponseDto> getBlogById(
             @PathVariable Long blogId
     ){
+        ObjectMapper objectMapper = new ObjectMapper();
+
         try {
+
             BlogResponseDto blogResponseDto = blogService.getBlog(blogId);
+            String json = objectMapper.writeValueAsString(blogResponseDto);
+            System.out.println("Json 반환 결과" + json);
             return ResponseEntity.ok(blogResponseDto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
