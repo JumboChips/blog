@@ -51,6 +51,7 @@ public class DefaultProjectService implements ProjectService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         return ProjectResponseDto.builder()
+                .projectId(project.getId())
                 .categoryId(project.getCategory().getId())
                 .thumbnail(project.getThumbnail())
                 .title(project.getTitle())
