@@ -38,7 +38,9 @@ public class DefaultBlogService implements BlogService {
                         blog.getContent(),
                         blog.getBlogPostTags().stream()
                                 .map(blogTag -> blogTag.getTag().getId())
-                                .toList()
+                                .toList(),
+                        blog.getCreatedAt(),
+                        blog.getUpdatedAt()
                 )).collect(Collectors.toList());
     }
 
@@ -51,6 +53,8 @@ public class DefaultBlogService implements BlogService {
                 .thumbnail(blog.getThumbnail())
                 .title(blog.getTitle())
                 .content(blog.getContent())
+                .createdAt(blog.getCreatedAt())
+                .updatedAt(blog.getUpdatedAt())
                 .build();
     }
 
