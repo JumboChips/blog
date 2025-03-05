@@ -40,7 +40,9 @@ public class DefaultProjectService implements ProjectService {
                         project.getContent(),
                         project.getProjectPostTags().stream()
                                 .map(projectTag -> projectTag.getTag().getId())
-                                .toList()
+                                .toList(),
+                        project.getCreatedAt(),
+                        project.getUpdatedAt()
                 )).collect(Collectors.toList());
     }
 
@@ -53,6 +55,8 @@ public class DefaultProjectService implements ProjectService {
                 .thumbnail(project.getThumbnail())
                 .title(project.getTitle())
                 .content(project.getContent())
+                .createdAt(project.getCreatedAt())
+                .updatedAt(project.getUpdatedAt())
                 .build();
     }
 
