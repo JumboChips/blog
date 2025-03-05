@@ -48,6 +48,7 @@ public class Blog {
     private List<BlogPostTag> blogPostTags = new ArrayList<>();
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
