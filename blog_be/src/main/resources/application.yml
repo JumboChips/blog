@@ -28,7 +28,7 @@ cors:
 # 로그 설정
 logging:
   level:
-    root: info # 기본 로그 레벨
+    root: debug # 기본 로그 레벨
     org.springframework: debug # Spring 관련 로그 레벨
     security: debug
 
