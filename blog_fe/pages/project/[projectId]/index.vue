@@ -16,7 +16,9 @@ const { data: project, error, pending } = useAsyncData<{
   projectId?: number; 
   thumbnail: string; 
   title: string; 
-  content: string; 
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 } | null>(async () => {
   const projectId = route.params.projectId;
   return await $fetch(`/api/v1/project/${projectId}`, {
