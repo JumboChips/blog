@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BlogRepository extends JpaRepository<Blog, Long> {
     List<Blog> findByUserId(Long userId);
+    List<Blog> findAllByOrderByCreatedAtDesc();
 }

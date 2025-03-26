@@ -29,7 +29,7 @@ public class DefaultBlogService implements BlogService {
     @Override
     public List<BlogResponseDto> getAllBlog() {
 
-        List<Blog> blogs = blogRepository.findAll();
+        List<Blog> blogs = blogRepository.findAllByOrderByCreatedAtDesc();
 
         return blogs.stream()
                 .map(blog -> new BlogResponseDto(
