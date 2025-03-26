@@ -32,6 +32,7 @@ const fetchBlogPosts = async () => {
       method: 'GET'
     });
     blogPosts.value = response;
+    console.log('블로그 불러오기 성공:', response);
   } catch (error) {
     console.error('블로그 불러오기 실패:', error);
   }

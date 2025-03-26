@@ -27,8 +27,4 @@ const { data: blog, error, pending } = useAsyncData<{
   });
 });
 
-watchEffect(() => {
-  console.log("블로그 데이터:", blog.value);
-});
-
 </script>
