@@ -30,7 +30,7 @@ public class DefaultProjectService implements ProjectService {
 
     @Override
     public List<ProjectResponseDto> getAllProject() {
-        List<Project> projects = projectRepository.findAll();
+        List<Project> projects = projectRepository.findAllByOrderByCreatedAtDesc();
 
         return projects.stream()
                 .map(project -> new ProjectResponseDto(
