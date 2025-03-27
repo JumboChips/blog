@@ -167,6 +167,9 @@ const deletePost = async () => {
   transform: translateX(-50%);
   text-align: center;
   color: white;
+  width: 90%; /* 너비 제한 추가 */
+  max-width: 800px; /* 최대 너비 설정 */
+  padding: 0 15px; /* 좌우 패딩 추가 */
 }
 
 /* 제목 스타일 */
@@ -175,6 +178,9 @@ const deletePost = async () => {
   font-weight: bold;
   margin-bottom: 10px;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  word-wrap: break-word; /* 긴 단어 줄바꿈 */
+  overflow-wrap: break-word; /* 긴 단어 줄바꿈 (최신 브라우저) */
+  hyphens: auto; /* 필요시 하이픈 추가 */
 }
 
 /* 카테고리 및 날짜 */
@@ -184,5 +190,32 @@ const deletePost = async () => {
   justify-content: center;
   font-size: 0.9rem;
   opacity: 0.9;
+  flex-wrap: wrap; /* 모바일에서 줄바꿈 허용 */
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.8rem; /* 모바일에서 폰트 크기 축소 */
+  }
+  
+  .text-container {
+    bottom: 30px; /* 모바일에서 위치 조정 */
+  }
+  
+  .meta-info {
+    font-size: 0.8rem; /* 모바일에서 메타 정보 폰트 크기 축소 */
+  }
+}
+
+/* 더 작은 화면에 대한 추가 조정 */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem; /* 더 작은 화면에서 폰트 크기 추가 축소 */
+  }
+  
+  .hero-section {
+    height: 250px; /* 더 작은 화면에서 높이 축소 */
+  }
 }
 </style>
