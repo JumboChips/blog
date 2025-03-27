@@ -39,7 +39,7 @@ jwt:
   secret: ${JWT_SECRET}
 
 image:
-  base-upload-dir: ${IMAGE_BASE_UPLOAD_DIR}
+  base-upload-dir: /home/jumbochips/project/blog/uploads
   upload-project-dir: project
   upload-blog-dir: blog
 
