@@ -1,0 +1,46 @@
+# 공통 설정
+server:
+  port: 8080  # HTTPS 기본 포트
+  address: 0.0.0.0  # 외부에서 접근 가능하게 설정
+
+spring:
+  application:
+    name: blog # 애플리케이션 이름
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update # create, update, validate, none 중 선택
+    show-sql: true # SQL 로그를 출력할지 여부
+    properties:
+      hibernate:
+        format_sql: true # SQL 포맷 설정
+        jdbc.time_zone: Asia/Seoul
+  mvc:
+    static-path-pattern: /static/**
+
+# 서버 설정
+cors:
+  allowed-origins: "https://jumbochips.com, https://www.jumbochips.com"
+  allowed-methods: "GET, POST, PUT, DELETE, OPTIONS"
+
+# 로그 설정
+logging:
+  level:
+    root: debug # 기본 로그 레벨
+    org.springframework: debug # Spring 관련 로그 레벨
+    security: debug
+
+jwt:
+  secret: ${JWT_SECRET}
+
+image:
+  base-upload-dir: /home/jumbochips/project/blog/uploads
+  upload-project-dir: project
+  upload-blog-dir: blog
+
+
