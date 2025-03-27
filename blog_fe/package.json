@@ -40,7 +40,7 @@
     "esbuild": "^0.25.0",
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
-    "nuxt": "^3.14.1592",
+    "nuxt": "^3.16.1",
     "pinia": "^2.3.0",
     "quill": "^2.0.3",
     "tiptap-extension-resize-image": "^1.2.1",
