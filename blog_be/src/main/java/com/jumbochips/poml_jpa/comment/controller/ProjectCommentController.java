@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/comment/project")
+@RequestMapping("/api/v1/comments/project")
 @RequiredArgsConstructor
 public class ProjectCommentController {
 
