@@ -259,6 +259,7 @@ const submitComment = async () => {
       token = await window.grecaptcha.enterprise.execute(siteKey, { action: 'submit_comment' });
         resolve();
       });
+      console.log("발급된 reCAPTCHA token:", token);
     });
   } catch (e) {
     alert('reCAPTCHA 실행 실패');
