@@ -43,7 +43,12 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.7.0'
+    // recCAPTCHA 관련 의존성
     implementation 'com.google.cloud:google-cloud-recaptchaenterprise:3.56.0'
+    implementation('com.google.protobuf:protobuf-java:4.28.2')
+    implementation("io.grpc:grpc-netty-shaded:1.62.2")
+    implementation("io.grpc:grpc-protobuf:1.62.2")
+    implementation("io.grpc:grpc-stub:1.62.2")
 }
 
 tasks.named('test') {
