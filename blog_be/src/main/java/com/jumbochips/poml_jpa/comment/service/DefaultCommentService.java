@@ -6,7 +6,9 @@ import com.jumbochips.poml_jpa.comment.domain.Comment;
 import com.jumbochips.poml_jpa.comment.dto.CommentRequestDto;
 import com.jumbochips.poml_jpa.comment.dto.CommentResponseDto;
 import com.jumbochips.poml_jpa.comment.repository.CommentRepository;
+import com.jumbochips.poml_jpa.common.recaptcha.RecaptchaValidationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +19,11 @@ import java.util.List;
 public class DefaultCommentService implements CommentService{
     private final CommentRepository commentRepository;
     private final BlogRepository blogRepository;
+    private final RecaptchaValidationService recaptchaValidationService;
+
+    // siteKey 환경변수에서 주입
+    @Value("${recaptcha.site-key}")
+    private String siteKey;
 
 
     @Override
@@ -31,15 +38,26 @@ public class DefaultCommentService implements CommentService{
     }
 
     @Override
-    public CommentResponseDto createComment(CommentRequestDto commentRequestDto) {
-        Blog blog = blogRepository.findById(commentRequestDto.getBlogId())
+    public CommentResponseDto createComment(CommentRequestDto dto) {
+
+        boolean isHuman = recaptchaValidationService.verifyToken(
+                dto.getRecaptchaToken(),
+                dto.getRecaptchaAction(),
+                siteKey
+        );
+
+        if (!isHuman) {
+            throw new IllegalArgumentException("reCAPTCHA 인증에 실패했습니다. 로봇으로 판단됩니다.");
+        }
+
+        Blog blog = blogRepository.findById(dto.getBlogId())
                 .orElseThrow(() -> new IllegalArgumentException("Blog not found"));
 
         Comment comment = Comment.builder()
                 .blog(blog)
-                .username(commentRequestDto.getUsername())
-                .pwd(commentRequestDto.getPwd())
-                .content(commentRequestDto.getContent())
+                .username(dto.getUsername())
+                .pwd(dto.getPwd())
+                .content(dto.getContent())
                 .build();
 
         commentRepository.save(comment);
@@ -53,12 +71,11 @@ public class DefaultCommentService implements CommentService{
     }
 
     @Override
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentRequestDto) {
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto dto) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
-        comment.updateContent(commentRequestDto.getContent());
-
+        comment.updateContent(dto.getContent());
         commentRepository.save(comment);
 
         return CommentResponseDto.builder()
