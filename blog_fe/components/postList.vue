@@ -1,14 +1,20 @@
 <template>
   <div class="container mx-auto px-4 py-12 sm:px-8">
-    <div v-if="isLoggedIn" class="mb-6 flex justify-end">
-      <router-link :to="createPath" class="rounded bg-purple-600 dark:bg-purple-700 px-4 py-2 font-bold text-white hover:bg-purple-700 dark:hover:bg-purple-800 transition-colors duration-300">
-        Create Post
-      </router-link>
+    <!-- 검색 및 필터 섹션 -->
+    <div class="mb-8">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div v-if="isLoggedIn" class="md:w-auto">
+          <router-link :to="createPath" class="block w-full md:w-auto text-center rounded bg-purple-600 dark:bg-purple-700 px-4 py-2 font-bold text-white hover:bg-purple-700 dark:hover:bg-purple-800 transition-colors duration-300">
+            Create Post
+          </router-link>
+        </div>
+      </div>
     </div>
 
+    <!-- 게시물 목록 -->
     <section class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <NuxtLink v-for="item in items" :key="item.id" :to="`${basePath}/${item.id}`"
-        class="relative block overflow-hidden rounded bg-white dark:bg-gray-800 shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+      <NuxtLink v-for="item in paginatedItems" :key="item.id" :to="`${basePath}/${item.id}`"
+        class="relative block overflow-hidden rounded bg-white dark:bg-gray-900 shadow hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
         
         <!-- 썸네일 이미지 -->
         <img :src="item.image" alt="Post Image" class="h-48 w-full object-cover" />
@@ -63,13 +69,29 @@
         </div>
       </NuxtLink>
     </section>
+
+    <!-- 검색 결과가 없을 때 -->
+    <div v-if="filteredItems.length === 0 && searchQuery" class="text-center py-12">
+      <p class="text-gray-600 dark:text-gray-400 text-lg transition-colors duration-300">
+        "{{ searchQuery }}"에 대한 검색 결과가 없습니다.
+      </p>
+    </div>
+
+    <!-- 페이지네이션 -->
+    <Pagination 
+      v-if="totalPages > 1" 
+      :current-page="currentPage" 
+      :total-pages="totalPages" 
+      @page-change="handlePageChange" 
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useRouter } from 'vue-router';
+import Pagination from './pagination.vue';
 
 // Pinia 스토어에서 로그인 여부 확인
 const authStore = useAuthStore();
@@ -95,6 +117,56 @@ const createPath = `/${props.mode}/post`;
 // 드롭다운 상태
 const openMenuId = ref<number | null>(null);
 
+// 검색 및 페이징 상태
+const searchQuery = ref('');
+const currentPage = ref(1);
+const itemsPerPage = 3; // 한 페이지에 표시할 항목 수
+
+// 검색어에 따른 필터링된 아이템
+const filteredItems = computed(() => {
+  if (!searchQuery.value) return props.items;
+  
+  const query = searchQuery.value.toLowerCase();
+  return props.items.filter(item => 
+    item.title.toLowerCase().includes(query) || 
+    extractTextFromHTML(item.description).toLowerCase().includes(query)
+  );
+});
+
+// 총 페이지 수 계산
+const totalPages = computed(() => {
+  return Math.ceil(filteredItems.value.length / itemsPerPage);
+});
+
+// 현재 페이지에 표시할 아이템
+const paginatedItems = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return filteredItems.value.slice(startIndex, endIndex);
+});
+
+// 검색어가 변경되면 페이지를 1로 리셋
+watch(searchQuery, () => {
+  currentPage.value = 1;
+});
+
+// 검색 처리 (디바운스 적용)
+let searchTimeout: NodeJS.Timeout | null = null;
+const handleSearch = () => {
+  if (searchTimeout) clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    // 실제 검색 로직은 computed에서 처리됨
+    // 여기서는 디바운스만 적용
+  }, 300);
+};
+
+// 페이지 변경 처리
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+  // 페이지 상단으로 스크롤
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 // 드롭다운 토글
 const toggleMenu = (id: number) => {
   openMenuId.value = openMenuId.value === id ? null : id;
@@ -105,13 +177,6 @@ const router = useRouter();
 const handleEditPost = (id: number) => {
   if (!isLoggedIn) {
     alert("권한이 없습니다.");
-    return;
-  }
-
-  // 동적 경로로 이동 (blogId 또는 projectId)
-  const postId = props.mode === 'blog' ? id : id; // 여기서는 이미 전달된 id를 그대로 사용 가능
-  if (!postId) {
-    console.error("게시글 ID가 없습니다.");
     return;
   }
 

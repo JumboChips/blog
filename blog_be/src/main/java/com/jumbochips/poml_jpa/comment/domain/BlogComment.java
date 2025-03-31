@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Comment {
+public class BlogComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
