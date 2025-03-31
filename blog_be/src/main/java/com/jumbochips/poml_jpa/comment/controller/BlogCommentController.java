@@ -2,6 +2,7 @@ package com.jumbochips.poml_jpa.comment.controller;
 
 import com.jumbochips.poml_jpa.comment.dto.CommentRequestDto;
 import com.jumbochips.poml_jpa.comment.dto.CommentResponseDto;
+import com.jumbochips.poml_jpa.comment.service.BlogCommentService;
 import com.jumbochips.poml_jpa.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/comment")
+@RequestMapping("/api/v1/comment/blog")
 @RequiredArgsConstructor
-public class CommentController {
-    private final CommentService commentService;
+public class BlogCommentController {
+    private final BlogCommentService commentService;
 
-    @GetMapping
-    public ResponseEntity<List<CommentResponseDto>> getComment(
-            @RequestParam Long blogId
+    @GetMapping("/{blogId}")
+    public ResponseEntity<List<CommentResponseDto>> getBlogComment(
+            @PathVariable Long blogId
     ) {
         try {
         List<CommentResponseDto> commentResponseDtos = commentService.getAllComment(blogId);

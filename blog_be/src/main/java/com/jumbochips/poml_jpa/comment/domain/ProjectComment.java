@@ -1,6 +1,6 @@
 package com.jumbochips.poml_jpa.comment.domain;
 
-import com.jumbochips.poml_jpa.blog.domain.Blog;
+import com.jumbochips.poml_jpa.project.domain.Project;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,14 +18,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Comment {
+public class ProjectComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     private String username;
 

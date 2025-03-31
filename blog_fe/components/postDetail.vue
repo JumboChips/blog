@@ -76,7 +76,7 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
-import { useRuntimeConfig } from '#app';
+import { useRuntimeConfig } from '#imports';
 import Comments from './comments.vue';
 
 const props = defineProps<{

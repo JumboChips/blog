@@ -6,7 +6,7 @@ import com.jumbochips.poml_jpa.comment.dto.CommentResponseDto;
 import java.util.List;
 
 public interface CommentService {
-    List<CommentResponseDto> getAllComment(Long blogId);
+    List<CommentResponseDto> getAllComment(Long postId);
     CommentResponseDto createComment (CommentRequestDto commentRequestDto);
     CommentResponseDto updateComment (Long commentId, CommentRequestDto commentRequestDto);
     void deleteComment (Long commentId);
