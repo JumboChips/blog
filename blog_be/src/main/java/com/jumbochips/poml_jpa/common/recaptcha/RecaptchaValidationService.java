@@ -13,6 +13,8 @@ public class RecaptchaValidationService {
     private static final float MIN_SCORE = 0.5f; // 허용 점수 기준
 
     public boolean verifyToken(String token, String expectedAction, String siteKey) {
+        System.out.println("전달받은 token: " + token);
+
         try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
             Event event = Event.newBuilder()
                     .setSiteKey(siteKey)
