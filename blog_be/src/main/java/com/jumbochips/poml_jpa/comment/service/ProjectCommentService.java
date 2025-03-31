@@ -36,7 +36,7 @@ public class ProjectCommentService implements CommentService{
     }
 
     @Override
-    public CommentResponseDto createComment(CommentRequestDto dto) {
+    public CommentResponseDto createComment(Long projectId, CommentRequestDto dto) {
         boolean isHuman = recaptchaValidationService.verifyToken(
                 dto.getRecaptchaToken(),
                 dto.getRecaptchaAction(),
@@ -47,7 +47,7 @@ public class ProjectCommentService implements CommentService{
             throw new IllegalArgumentException("reCAPTCHA 인증에 실패했습니다. 로봇으로 판단됩니다.");
         }
 
-        Project project = projectRepository.findById(dto.getBlogId())
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Blog not found"));
 
         ProjectComment comment = ProjectComment.builder()

@@ -28,12 +28,13 @@ public class ProjectCommentController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/{projectId}")
     public ResponseEntity<CommentResponseDto> createComment(
+            @PathVariable Long projectId,
             @RequestBody CommentRequestDto commentRequestDto
     ) {
         try {
-            CommentResponseDto commentResponseDto = commentService.createComment(commentRequestDto);
+            CommentResponseDto commentResponseDto = commentService.createComment(projectId, commentRequestDto);
             return ResponseEntity.ok(commentResponseDto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
