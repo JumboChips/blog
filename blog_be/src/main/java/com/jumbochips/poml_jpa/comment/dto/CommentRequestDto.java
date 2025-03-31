@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class CommentRequestDto {
-    private Long blogId;
     private String username;
     private String pwd;
     private String content;

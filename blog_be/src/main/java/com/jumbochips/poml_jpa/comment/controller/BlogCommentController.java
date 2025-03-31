@@ -28,12 +28,13 @@ public class BlogCommentController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/{blogId}")
     public ResponseEntity<CommentResponseDto> createComment(
+            @PathVariable Long blogId,
             @RequestBody CommentRequestDto commentRequestDto
     ) {
         try {
-            CommentResponseDto commentResponseDto = commentService.createComment(commentRequestDto);
+            CommentResponseDto commentResponseDto = commentService.createComment(blogId, commentRequestDto);
             return ResponseEntity.ok(commentResponseDto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
