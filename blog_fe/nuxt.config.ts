@@ -8,6 +8,13 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: 'JumboChips - 웹 개발 포트폴리오와 기술 블로그.' },
       ],
+      script: [
+        {
+          src: `https://www.google.com/recaptcha/enterprise.js?render=${process.env.RECAPTCHA_SITE_KEY}`,
+          async: true,
+          defer: true
+        },
+      ]
     },
   },
   devtools: { enabled: true },
