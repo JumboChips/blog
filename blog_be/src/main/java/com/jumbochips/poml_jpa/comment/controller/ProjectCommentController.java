@@ -2,8 +2,7 @@ package com.jumbochips.poml_jpa.comment.controller;
 
 import com.jumbochips.poml_jpa.comment.dto.CommentRequestDto;
 import com.jumbochips.poml_jpa.comment.dto.CommentResponseDto;
-import com.jumbochips.poml_jpa.comment.service.BlogCommentService;
-import com.jumbochips.poml_jpa.comment.service.CommentService;
+import com.jumbochips.poml_jpa.comment.service.ProjectCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,17 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/comment/blog")
+@RequestMapping("/api/v1/comment/project")
 @RequiredArgsConstructor
-public class BlogCommentController {
-    private final BlogCommentService commentService;
+public class ProjectCommentController {
 
-    @GetMapping("/{blogId}")
-    public ResponseEntity<List<CommentResponseDto>> getBlogComment(
-            @PathVariable Long blogId
+    private final ProjectCommentService commentService;
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<List<CommentResponseDto>> getProjectComment(
+            @PathVariable Long projectId
     ) {
         try {
-        List<CommentResponseDto> commentResponseDtos = commentService.getAllComment(blogId);
+            List<CommentResponseDto> commentResponseDtos = commentService.getAllComment(projectId);
             return ResponseEntity.ok(commentResponseDtos);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -64,5 +64,4 @@ public class BlogCommentController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 }
