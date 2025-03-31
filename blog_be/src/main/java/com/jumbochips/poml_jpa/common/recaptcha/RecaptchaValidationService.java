@@ -5,15 +5,22 @@ import com.google.recaptchaenterprise.v1.Assessment;
 import com.google.recaptchaenterprise.v1.CreateAssessmentRequest;
 import com.google.recaptchaenterprise.v1.Event;
 import com.google.recaptchaenterprise.v1.ProjectName;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RecaptchaValidationService {
-    private static final String PROJECT_ID = "jumbochips"; // Google Cloud 프로젝트 ID
-    private static final float MIN_SCORE = 0.5f; // 허용 점수 기준
+
+    private static final String PROJECT_ID = "jumbochips";
+    private static final float MIN_SCORE = 0.5f;
+
+    private final RecaptchaClientProvider recaptchaClientProvider;
 
     public boolean verifyToken(String token, String expectedAction, String siteKey) {
-        try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
+        try {
+            RecaptchaEnterpriseServiceClient client = recaptchaClientProvider.getClient();
+
             Event event = Event.newBuilder()
                     .setSiteKey(siteKey)
                     .setToken(token)
@@ -26,25 +33,23 @@ public class RecaptchaValidationService {
 
             Assessment response = client.createAssessment(request);
 
-            // 유효한 토큰인지 확인
             if (!response.getTokenProperties().getValid()) {
-                System.out.println("Invalid token: " + response.getTokenProperties().getInvalidReason());
+                System.out.println("[reCAPTCHA] 유효하지 않은 토큰: " + response.getTokenProperties().getInvalidReason());
                 return false;
             }
 
-            // Action 값이 예상과 일치하는지 확인
             if (!expectedAction.equals(response.getTokenProperties().getAction())) {
-                System.out.println("Unexpected action: " + response.getTokenProperties().getAction());
+                System.out.printf("[reCAPTCHA] 예상한 액션 '%s'과 일치하지 않음: %s%n",
+                        expectedAction, response.getTokenProperties().getAction());
                 return false;
             }
 
-            // 점수 확인
             float score = response.getRiskAnalysis().getScore();
-            System.out.println("reCAPTCHA Score: " + score);
+            System.out.println("[reCAPTCHA] 점수: " + score);
             return score >= MIN_SCORE;
 
         } catch (Exception e) {
-            System.err.println("reCAPTCHA 검증 중 예외 발생: " + e.getMessage());
+            System.err.println("[reCAPTCHA] 검증 중 예외 발생: " + e.getMessage());
             return false;
         }
     }
