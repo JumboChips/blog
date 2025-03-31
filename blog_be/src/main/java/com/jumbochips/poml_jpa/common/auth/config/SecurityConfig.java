@@ -88,7 +88,7 @@ public class SecurityConfig {
                 // 경로별 인가 작업
                 http
                                 .authorizeHttpRequests((auth) -> auth
-                                                .requestMatchers("/login", "/api/v1/**", "/api/v1/join", "/uploads/**")
+                                                .requestMatchers("/login", "/api/v1/**", "/api/v1/join", "/uploads/**", "/error")
                                                 .permitAll()
                                                 .requestMatchers("/admin").hasRole("ADMIN")
                                                 .anyRequest().authenticated());
