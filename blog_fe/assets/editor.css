@@ -75,6 +75,12 @@
   font-family: monospace;
 }
 
+/* 다크 모드 코드 블록 스타일 */
+.dark .prose-content pre {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
 /* 이미지 스타일 */
 .prose-content img {
   max-width: 100%;
@@ -109,4 +115,60 @@
 /* 코드 블록 텍스트 크기 */
 .prose-content code {
   font-size: 0.875rem !important;
+}
+
+/* 다크 모드 스타일 */
+.dark .prose-content {
+  color: #e2e8f0;
+}
+
+.dark .prose-content h1,
+.dark .prose-content h2,
+.dark .prose-content h3 {
+  color: #f1f5f9;
+}
+
+.dark .prose-content a {
+  color: #93c5fd;
+}
+
+.dark .prose-content strong {
+  color: #f1f5f9;
+}
+
+.dark .prose-content code {
+  color: #e2e8f0;
+  background-color: #1e293b;
+}
+
+.dark .prose-content blockquote {
+  color: #cbd5e1;
+  border-left-color: #475569;
+}
+
+.dark .prose-content hr {
+  border-color: #475569;
+}
+
+.dark .prose-content ul,
+.dark .prose-content ol {
+  color: #e2e8f0;
+}
+
+.dark .prose-content li::marker {
+  color: #94a3b8;
+}
+
+.dark .prose-content table {
+  border-color: #475569;
+}
+
+.dark .prose-content th {
+  color: #f1f5f9;
+  background-color: #334155;
+}
+
+.dark .prose-content td {
+  color: #e2e8f0;
+  border-color: #475569;
 }
