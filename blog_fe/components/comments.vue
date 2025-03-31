@@ -213,7 +213,7 @@ const fetchComments = async () => {
   try {
     const config = useRuntimeConfig();
     const response = await $fetch<{ 
-      id: number; 
+      commentId: number; 
       username: string; 
       content: string; 
       createdAt: string 
