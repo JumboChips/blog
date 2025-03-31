@@ -16,7 +16,7 @@ import java.util.List;
 public class BlogCommentController {
     private final BlogCommentService commentService;
 
-    @GetMapping("/{blogId}")
+    @GetMapping("{blogId}")
     public ResponseEntity<List<CommentResponseDto>> getBlogComment(
             @PathVariable Long blogId
     ) {
@@ -28,7 +28,7 @@ public class BlogCommentController {
         }
     }
 
-    @PostMapping("/{blogId}")
+    @PostMapping("{blogId}")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long blogId,
             @RequestBody CommentRequestDto commentRequestDto

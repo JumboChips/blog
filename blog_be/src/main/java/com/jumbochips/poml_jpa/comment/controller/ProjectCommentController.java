@@ -16,7 +16,7 @@ public class ProjectCommentController {
 
     private final ProjectCommentService commentService;
 
-    @GetMapping("/{projectId}")
+    @GetMapping("{projectId}")
     public ResponseEntity<List<CommentResponseDto>> getProjectComment(
             @PathVariable Long projectId
     ) {
@@ -28,7 +28,7 @@ public class ProjectCommentController {
         }
     }
 
-    @PostMapping("/{projectId}")
+    @PostMapping("{projectId}")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long projectId,
             @RequestBody CommentRequestDto commentRequestDto
