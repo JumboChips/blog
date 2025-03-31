@@ -22,6 +22,9 @@ jobs:
           script: |
             cd ~/project/blog
             git pull origin main
+            cd blog_be
+            ./gradlew build -x test
+            cd ..
             docker-compose down
             docker-compose build --no-cache
             docker-compose up -d
