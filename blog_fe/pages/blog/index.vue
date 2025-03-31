@@ -21,6 +21,10 @@
 import { ref, onMounted, computed } from 'vue';
 import PostList from '@/components/postList.vue';
 
+useHead({
+  title: 'Blog',
+});
+
 // BlogResponse 타입 정의
 interface BlogResponseDto {
   blogId: number;

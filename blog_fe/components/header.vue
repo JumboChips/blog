@@ -3,9 +3,8 @@
     <div class="container mx-auto flex items-center justify-between py-4 px-6">
       <!-- 로고 또는 제목 -->
       <NuxtLink to="/" class="flex items-center group">
-        <div class="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center text-white font-bold mr-2 shadow-md transform group-hover:scale-105 transition-transform duration-300">
-          JC
-        </div>
+        <img v-if="!isDarkMode" src="/no-bg-logo-2.png" alt="JumboChips Logo" class="w-14 h-14 transform group-hover:scale-105 transition-transform duration-300" />
+        <img v-else src="/no-bg-logo-2-white.png" alt="JumboChips Logo" class="w-14 h-14 transform group-hover:scale-105 transition-transform duration-300" />
         <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 transition-colors duration-300">
           JumboChips
         </h1>
