@@ -273,7 +273,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useRuntimeConfig } from '#app'
+import { useRuntimeConfig } from '#imports'
 import { useAuthStore } from '~/stores/auth'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
