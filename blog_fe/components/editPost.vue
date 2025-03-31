@@ -1,27 +1,27 @@
 <template>
-  <div class="w-full max-w-5xl mx-auto p-6">
-    <h1 class="text-3xl font-extrabold mb-6 text-gray-800">
+  <div class="w-full max-w-5xl mx-auto p-6 bg-white dark:bg-gray-900 transition-colors duration-300">
+    <h1 class="text-3xl font-extrabold mb-6 text-gray-800 dark:text-white transition-colors duration-300">
       {{ mode === 'blog' ? '블로그 글 수정' : '프로젝트 글 수정' }}
     </h1>
 
     <!-- 제목 입력 -->
     <div class="mb-6">
-      <label for="title" class="block font-medium mb-1 text-gray-700">제목</label>
+      <label for="title" class="block font-medium mb-1 text-gray-700 dark:text-gray-300 transition-colors duration-300">제목</label>
       <input
         id="title"
         v-model="title"
-        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all"
+        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-purple-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 transition-colors duration-300"
         placeholder="글 제목을 입력하세요"
       />
     </div>
 
     <!-- 카테고리 선택 -->
     <div class="mb-6">
-      <label for="category" class="block font-medium mb-1 text-gray-700">카테고리</label>
+      <label for="category" class="block font-medium mb-1 text-gray-700 dark:text-gray-300 transition-colors duration-300">카테고리</label>
       <select
         id="category"
         v-model="categoryId"
-        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-blue-300 transition-all"
+        class="border px-4 py-2 w-full rounded focus:outline-none focus:ring-0 focus:border-purple-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 transition-colors duration-300"
       >
         <option value="1">Default</option>
       </select>
@@ -29,17 +29,18 @@
 
     <!-- 태그 선택 -->
     <div class="mb-6">
-      <label for="tags" class="block font-medium mb-1 text-gray-700">태그</label>
+      <label for="tags" class="block font-medium mb-1 text-gray-700 dark:text-gray-300 transition-colors duration-300">태그</label>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="tag in availableTags"
           :key="tag.id"
           @click="toggleTag(tag.id)"
           :class="{
-            'bg-blue-500 text-white': tagIds.includes(tag.id),
-            'bg-gray-200 text-gray-700': !tagIds.includes(tag.id),
+            'bg-purple-500 text-white': tagIds.includes(tag.id),
+            'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': !tagIds.includes(tag.id),
           }"
           class="text-sm py-2 px-4 rounded focus:outline-none transition-all"
+          type="button"
         >
           {{ tag.name }}
         </button>
@@ -47,40 +48,45 @@
     </div>
 
     <!-- 툴바 -->
-    <div class="flex flex-wrap gap-3 mb-4 p-2 bg-gray-50 rounded border">
+    <div class="flex flex-wrap gap-3 mb-4 p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 transition-colors duration-300">
       <!-- 제목 스타일 -->
       <div class="relative">
         <button
           @click="toggleHeadingMenu"
-          class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all flex items-center gap-1"
+          class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all flex items-center gap-1 text-gray-700 dark:text-gray-300"
+          type="button"
         >
           제목 <span class="text-xs">▼</span>
         </button>
         <div
           v-if="showHeadingMenu"
-          class="absolute top-full left-0 mt-1 bg-white shadow-lg rounded z-10 w-40"
+          class="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 shadow-lg rounded z-10 w-40 border border-gray-200 dark:border-gray-700 transition-colors duration-300"
         >
           <button
             @click="setHeading(1)"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100 text-2xl font-bold"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             제목 1
           </button>
           <button
             @click="setHeading(2)"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100 text-xl font-bold"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             제목 2
           </button>
           <button
             @click="setHeading(3)"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100 text-lg font-bold"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-lg font-bold text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             제목 3
           </button>
           <button
             @click="setHeading(0)"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             일반 텍스트
           </button>
@@ -93,41 +99,45 @@
           type="number"
           v-model="fontSize"
           @change="setCustomFontSize"
-          class="w-16 text-sm py-1 px-2 border rounded focus:outline-none focus:border-blue-300"
+          class="w-16 text-sm py-1 px-2 border rounded focus:outline-none focus:border-purple-300 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 transition-colors duration-300"
           min="8"
           max="72"
           step="1"
         />
-        <span class="text-sm text-gray-500">px</span>
+        <span class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">px</span>
       </div>
 
       <!-- 리스트 -->
       <div class="relative">
         <button
           @click="toggleListMenu"
-          class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all flex items-center gap-1"
+          class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all flex items-center gap-1 text-gray-700 dark:text-gray-300"
+          type="button"
         >
           리스트 <span class="text-xs">▼</span>
         </button>
         <div
           v-if="showListMenu"
-          class="absolute top-full left-0 mt-1 bg-white shadow-lg rounded z-10 w-40"
+          class="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 shadow-lg rounded z-10 w-40 border border-gray-200 dark:border-gray-700 transition-colors duration-300"
         >
           <button
             @click="toggleBulletList"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             <span class="mr-2">•</span> 불릿 리스트
           </button>
           <button
             @click="toggleOrderedList"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             <span class="mr-2">1.</span> 순번 리스트
           </button>
           <button
             @click="toggleTaskList"
-            class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+            class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center text-gray-900 dark:text-white transition-colors duration-300"
+            type="button"
           >
             <span class="mr-2">☐</span> 태스크 리스트
           </button>
@@ -137,26 +147,30 @@
       <!-- 기본 서식 -->
       <button
         @click="toggleBold"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all font-bold"
+        class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all font-bold text-gray-700 dark:text-gray-300"
+        type="button"
       >
         B
       </button>
       <button
         @click="toggleItalic"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all italic"
+        class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all italic text-gray-700 dark:text-gray-300"
+        type="button"
       >
         I
       </button>
       <button
         @click="toggleUnderline"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all underline"
+        class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all underline text-gray-700 dark:text-gray-300"
+        type="button"
       >
         U
       </button>
       <button
         @click="toggleHighlight"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-        style="background-color: #ffff99"
+        class="text-sm py-2 px-4 rounded focus:outline-none focus:ring-0 transition-all text-gray-700 dark:text-gray-300"
+        :style="{ backgroundColor: isDarkMode ? '#4d3800' : '#ffff99' }"
+        type="button"
       >
         형광펜
       </button>
@@ -165,22 +179,25 @@
       <div class="flex items-center gap-1">
         <button
           @click="setTextAlign('left')"
-          class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-          :class="{ 'bg-gray-300': editor?.isActive({ textAlign: 'left' }) }"
+          class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all text-gray-700 dark:text-gray-300"
+          :class="{ 'bg-gray-300 dark:bg-gray-600': editor?.isActive({ textAlign: 'left' }) }"
+          type="button"
         >
           ⟵
         </button>
         <button
           @click="setTextAlign('center')"
-          class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-          :class="{ 'bg-gray-300': editor?.isActive({ textAlign: 'center' }) }"
+          class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all text-gray-700 dark:text-gray-300"
+          :class="{ 'bg-gray-300 dark:bg-gray-600': editor?.isActive({ textAlign: 'center' }) }"
+          type="button"
         >
           ⟷
         </button>
         <button
           @click="setTextAlign('right')"
-          class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
-          :class="{ 'bg-gray-300': editor?.isActive({ textAlign: 'right' }) }"
+          class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all text-gray-700 dark:text-gray-300"
+          :class="{ 'bg-gray-300 dark:bg-gray-600': editor?.isActive({ textAlign: 'right' }) }"
+          type="button"
         >
           ⟶
         </button>
@@ -189,7 +206,8 @@
       <!-- 코드 -->
       <button
         @click="toggleCodeBlock"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all font-mono"
+        class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all font-mono text-gray-700 dark:text-gray-300"
+        type="button"
       >
         &lt;/&gt;
       </button>
@@ -204,21 +222,23 @@
       />
       <button
         @click="triggerFileUpload"
-        class="text-sm py-2 px-4 bg-gray-100 hover:bg-gray-200 rounded focus:outline-none focus:ring-0 transition-all"
+        class="text-sm py-2 px-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded focus:outline-none focus:ring-0 transition-all text-gray-700 dark:text-gray-300"
+        type="button"
       >
         이미지
       </button>
     </div>
 
     <!-- Tiptap Editor -->
-    <div class="mb-6 border border-gray-300 rounded shadow-sm max-h-[400px] min-h-[400px] overflow-y-auto">
+    <div class="mb-6 border border-gray-300 dark:border-gray-700 rounded shadow-sm max-h-[400px] min-h-[400px] overflow-y-auto bg-white dark:bg-gray-800 transition-colors duration-300">
       <editor-content :editor="editor" class="w-full h-full text-base p-3" />
     </div>
 
     <!-- 수정 버튼 -->
     <button
       @click="submitPost"
-      class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded font-semibold shadow transition-all focus:outline-none focus:ring-0"
+      class="bg-purple-600 dark:bg-purple-700 hover:bg-purple-700 dark:hover:bg-purple-800 text-white px-6 py-3 rounded font-semibold shadow transition-all focus:outline-none focus:ring-0"
+      type="button"
     >
       수정하기
     </button>
@@ -226,7 +246,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRuntimeConfig } from '#app'
 import { useAuthStore } from '~/stores/auth'
@@ -248,6 +268,14 @@ const props = defineProps<{
   mode: 'blog' | 'project'
   postId: number
 }>()
+
+// 다크 모드 감지
+const isDarkMode = computed(() => {
+  if (typeof document !== 'undefined') {
+    return document.documentElement.classList.contains('dark');
+  }
+  return false;
+});
 
 // DTO 타입 정의
 interface BlogResponseDto {
@@ -288,7 +316,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 // 이미지 URL 배열
 const imageUrls = ref<string[]>([]);
 
-// Tiptap 에디터 설정
+// Tiptap 에디터 
 const editor = new Editor({
   extensions: [
     StarterKit.configure({
@@ -333,7 +361,7 @@ const editor = new Editor({
   ],
   editorProps: {
   attributes: {
-    class: 'prose prose-lg max-w-none focus:outline-none',
+    class: 'prose prose-lg max-w-none focus:outline-none dark:prose-invert',
   },
   handleKeyDown: (view, event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -690,6 +718,13 @@ watch(() => props.postId, (newId) => {
   overflow-x: auto;
 }
 
+/* 다크 모드 코드 블록 스타일 */
+.dark .tiptap-code-block,
+.dark .ProseMirror pre {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
 /* 이미지 스타일 */
 .ProseMirror img {
   max-width: 100%;
@@ -714,5 +749,61 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* 다크 모드 스타일 */
+.dark .ProseMirror {
+  color: #e2e8f0;
+}
+
+.dark .ProseMirror h1,
+.dark .ProseMirror h2,
+.dark .ProseMirror h3 {
+  color: #f1f5f9;
+}
+
+.dark .ProseMirror a {
+  color: #93c5fd;
+}
+
+.dark .ProseMirror strong {
+  color: #f1f5f9;
+}
+
+.dark .ProseMirror code {
+  color: #e2e8f0;
+  background-color: #1e293b;
+}
+
+.dark .ProseMirror blockquote {
+  color: #cbd5e1;
+  border-left-color: #475569;
+}
+
+.dark .ProseMirror hr {
+  border-color: #475569;
+}
+
+.dark .ProseMirror ul,
+.dark .ProseMirror ol {
+  color: #e2e8f0;
+}
+
+.dark .ProseMirror li::marker {
+  color: #94a3b8;
+}
+
+.dark .ProseMirror table {
+  border-color: #475569;
+}
+
+.dark .ProseMirror th {
+  color: #f1f5f9;
+  background-color: #334155;
+}
+
+.dark .ProseMirror td {
+  color: #e2e8f0;
+  border-color: #475569;
 }
 </style>

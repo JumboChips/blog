@@ -8,18 +8,33 @@
       <!-- 드롭다운 메뉴 (우측 상단) -->
       <div v-if="authStore.isLoggedIn" class="absolute top-4 right-4">
         <div class="relative">
-          <button @click.stop.prevent="toggleMenu" class="p-2 bg-white rounded-full shadow-lg">
-            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-
+          <button 
+            @click.stop.prevent="toggleMenu" 
+            class="p-2 bg-white dark:bg-gray-700 rounded-full shadow-lg transition-colors duration-300"
+            type="button"
+          >
+            <svg class="h-6 w-6 text-gray-700 dark:text-gray-300 transition-colors duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
           </button>
 
           <!-- 드롭다운 메뉴 -->
           <div v-if="showMenu"
-            class="absolute right-0 mt-2 w-32 bg-white border rounded-lg shadow-lg pointer-events-auto">
-            <button @click="editPost" class="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100">
+            class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg pointer-events-auto transition-colors duration-300">
+            <button 
+              @click="editPost" 
+              class="block w-full px-4 py-2 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300"
+              type="button"
+            >
               편집
             </button>
-            <button @click="deletePost" class="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100">
+            <button 
+              @click="deletePost" 
+              class="block w-full px-4 py-2 text-left text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300"
+              type="button"
+            >
               삭제
             </button>
           </div>
@@ -33,12 +48,12 @@
           <span class="date">📅 {{ formatDate(post.createdAt) }}</span>
           <span v-if="post.updatedAt !== post.createdAt" class="date">📝 수정일: {{ formatDate(post.updatedAt) }}</span>
         </div>
-                <!-- 카테고리 및 태그 -->
+        <!-- 카테고리 및 태그 -->
         <div class="mt-2 flex justify-center items-center flex-wrap gap-2">
-          <span v-if="post.category" class="px-3 py-1 text-sm font-semibold bg-gray-100 text-gray-800 rounded">
+          <span v-if="post.category" class="px-3 py-1 text-sm font-semibold bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded transition-colors duration-300">
             {{ post.category.name }}
           </span>
-          <span v-for="tag in post.tags" :key="tag.id" class="px-3 py-1 text-sm font-semibold bg-blue-500 text-white rounded">
+          <span v-for="tag in post.tags" :key="tag.id" class="px-3 py-1 text-sm font-semibold bg-purple-500 dark:bg-purple-600 text-white rounded transition-colors duration-300">
             #{{ tag.name }}
           </span>
         </div>
@@ -46,16 +61,23 @@
     </div>
 
     <!-- 본문 콘텐츠 -->
-    <article v-html="post.content" class="prose-content prose prose-lg prose-gray max-w-4xl mx-auto p-6 text-gray-800 bg-white"></article>
+    <article v-html="post.content" class="prose-content prose prose-lg prose-gray dark:prose-invert max-w-4xl mx-auto p-6 text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-900 transition-colors duration-300"></article>
+    
+    <!-- 댓글 섹션 -->
+    <Comments 
+      :postId="postId" 
+      :postType="mode" 
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '~/stores/auth';
 import { useRuntimeConfig } from '#app';
+import Comments from './comments.vue';
 
 const props = defineProps<{
   post: {
@@ -81,7 +103,6 @@ const formatDate = (dateString: string | undefined) => {
   });
 };
 
-
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
@@ -90,7 +111,17 @@ const showMenu = ref(false);
 
 // postId를 props에서 가져오거나, props에 없으면 route.params에서 가져오기
 const postId = computed(() => {
-  return props.post?.blogId || props.post?.projectId || route.params.blogId || route.params.projectId;
+  // props에서 ID 값을 먼저 확인
+  if (props.post?.blogId) return props.post.blogId;
+  if (props.post?.projectId) return props.post.projectId;
+  
+  // route.params에서 ID 값 확인 (배열일 경우 첫 번째 요소 사용)
+  const routeId = props.mode === 'blog' 
+    ? route.params.blogId 
+    : route.params.projectId;
+    
+  // 배열인 경우 첫 번째 요소 반환, 그렇지 않으면 값 그대로 반환
+  return Array.isArray(routeId) ? routeId[0] : routeId;
 });
 
 // 드롭다운 메뉴 토글
@@ -105,7 +136,7 @@ const editPost = () => {
     return;
   }
 
-  if (!postId) {
+  if (!postId.value) {
     alert("게시글 ID가 존재하지 않습니다.");
     console.error("게시글 ID가 존재하지 않아 편집 페이지로 이동할 수 없습니다.");
     return;
@@ -217,5 +248,25 @@ const deletePost = async () => {
   .hero-section {
     height: 250px; /* 더 작은 화면에서 높이 축소 */
   }
+}
+
+/* 다크 모드에서 prose 스타일 조정 */
+:deep(.dark .prose-content) {
+  --tw-prose-body: theme('colors.gray.300');
+  --tw-prose-headings: theme('colors.white');
+  --tw-prose-lead: theme('colors.gray.300');
+  --tw-prose-links: theme('colors.purple.400');
+  --tw-prose-bold: theme('colors.white');
+  --tw-prose-counters: theme('colors.gray.400');
+  --tw-prose-bullets: theme('colors.gray.400');
+  --tw-prose-hr: theme('colors.gray.700');
+  --tw-prose-quotes: theme('colors.gray.300');
+  --tw-prose-quote-borders: theme('colors.gray.700');
+  --tw-prose-captions: theme('colors.gray.400');
+  --tw-prose-code: theme('colors.white');
+  --tw-prose-pre-code: theme('colors.gray.300');
+  --tw-prose-pre-bg: theme('colors.gray.800');
+  --tw-prose-th-borders: theme('colors.gray.700');
+  --tw-prose-td-borders: theme('colors.gray.700');
 }
 </style>

@@ -19,7 +19,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL || 'https://jumbochips.com', // 클라이언트와 서버에서 모두 접근 가능
-      uploadsBaseUrl: process.env.UPLOADS_BASE_URL
+      uploadsBaseUrl: process.env.UPLOADS_BASE_URL,
+      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY || '',
     }
   },
   plugins: ['~/plugins/pinia']

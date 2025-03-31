@@ -38,6 +38,9 @@ logging:
 jwt:
   secret: ${JWT_SECRET}
 
+recaptcha:
+  site-key: ${RECAPTCHA_SITE_KEY}
+
 image:
   base-upload-dir: /home/jumbochips/project/blog/uploads
   upload-project-dir: project
