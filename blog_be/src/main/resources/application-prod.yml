@@ -31,9 +31,11 @@ cors:
 # 로그 설정
 logging:
   level:
-    root: debug # 기본 로그 레벨
-    org.springframework: debug # Spring 관련 로그 레벨
-    security: debug
+    root: INFO  # 전체 기본 로그 레벨 (운영 환경에서는 DEBUG 피하는 걸 권장)
+    org.springframework.web: WARN   # 요청 처리 관련 로그는 경고 이상만
+    org.springframework.security: WARN  # 보안 관련 로그는 필요에 따라 DEBUG로 조정 가능
+    org.hibernate.SQL: ERROR         # SQL 로그는 운영환경에서는 보통 끔 (또는 ERROR로)
+    org.hibernate.type.descriptor.sql.BasicBinder: OFF
 
 jwt:
   secret: ${JWT_SECRET}
