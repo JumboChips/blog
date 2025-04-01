@@ -8,7 +8,5 @@ public class CommentRequestDto {
     private String username;
     private String pwd;
     private String content;
-
     private String recaptchaToken;
-    private String recaptchaAction;
 }

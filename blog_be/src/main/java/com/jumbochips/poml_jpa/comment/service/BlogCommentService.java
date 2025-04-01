@@ -40,12 +40,7 @@ public class BlogCommentService implements CommentService{
     @Override
     public CommentResponseDto createComment(Long blogId, CommentRequestDto dto) {
 
-        boolean isHuman = recaptchaValidationService.verifyToken(
-                dto.getRecaptchaToken(),
-                dto.getRecaptchaAction(),
-                siteKey
-        );
-
+        boolean isHuman = recaptchaValidationService.verifyRecaptcha(dto.getRecaptchaToken());
         if (!isHuman) {
             throw new IllegalArgumentException("reCAPTCHA 인증에 실패했습니다. 로봇으로 판단됩니다.");
         }
