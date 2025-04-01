@@ -14,6 +14,8 @@ public class RecaptchaValidationService {
 
     public boolean verifyToken(String token, String expectedAction, String siteKey) {
         System.out.println("전달받은 token: " + token);
+        System.out.println("전달받은 expectedAction: " + expectedAction);
+        System.out.println("전달받은 siteKey: " + siteKey);
 
         try (RecaptchaEnterpriseServiceClient client = RecaptchaEnterpriseServiceClient.create()) {
             Event event = Event.newBuilder()
