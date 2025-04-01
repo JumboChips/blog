@@ -3,7 +3,6 @@ package com.jumbochips.poml_jpa.comment.controller;
 import com.jumbochips.poml_jpa.comment.dto.CommentRequestDto;
 import com.jumbochips.poml_jpa.comment.dto.CommentResponseDto;
 import com.jumbochips.poml_jpa.comment.service.BlogCommentService;
-import com.jumbochips.poml_jpa.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

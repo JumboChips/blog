@@ -21,11 +21,6 @@ public class BlogCommentService implements CommentService{
     private final BlogRepository blogRepository;
     private final RecaptchaValidationService recaptchaValidationService;
 
-    // siteKey 환경변수에서 주입
-    @Value("${recaptcha.site-key}")
-    private String siteKey;
-
-
     @Override
     public List<CommentResponseDto> getAllComment(Long blogId) {
         return blogCommentRepository.findAllByBlogId(blogId).stream()
