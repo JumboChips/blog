@@ -10,7 +10,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          src: `https://www.google.com/recaptcha/enterprise.js?render=${process.env.RECAPTCHA_SITE_KEY}`,
+          src: `https://www.google.com/recaptcha/api.js`,
           async: true,
           defer: true
         },

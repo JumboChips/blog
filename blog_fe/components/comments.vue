@@ -169,7 +169,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRuntimeConfig } from '#imports';
 
 const props = defineProps<{
@@ -177,13 +177,7 @@ const props = defineProps<{
   postType: 'blog' | 'project';
 }>();
 
-
-
-// reCAPTCHA 관련 변수
-const recaptchaContainer = ref<HTMLElement | null>(null);
-const recaptchaError = ref('');
-
-// 댓글 관련 상태
+// 댓글 상태
 const comments = ref<any[]>([]);
 const isSubmitting = ref(false);
 const newComment = ref({
@@ -192,12 +186,15 @@ const newComment = ref({
   content: ''
 });
 
-// 비밀번호 모달 관련 상태
+// 비밀번호 모달
 const showPasswordModal = ref(false);
 const passwordInput = ref('');
 const currentCommentId = ref<number | null>(null);
 
-// 날짜 포맷팅 함수
+// reCAPTCHA 관련
+const recaptchaError = ref('');
+
+// 날짜 포맷
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('ko-KR', {
     year: 'numeric',
@@ -212,23 +209,15 @@ const formatDate = (dateString: string) => {
 const fetchComments = async () => {
   try {
     const config = useRuntimeConfig();
-    const response = await $fetch<{ 
-      commentId: number; 
-      username: string; 
-      content: string; 
-      createdAt: string 
-    }[]>(`${config.public.apiBaseUrl}/api/v1/comments/${props.postType}/${props.postId}`, {
-      method: 'GET'
-    });
-    
-    comments.value = response.map((comment: any) => ({
+    const response = await $fetch<any[]>(`${config.public.apiBaseUrl}/api/v1/comments/${props.postType}/${props.postId}`);
+    comments.value = response.map(comment => ({
       ...comment,
       isEditing: false,
       editContent: comment.content,
       editPassword: ''
     }));
-  } catch (error) {
-    console.error('댓글을 불러오는 중 오류 발생:', error);
+  } catch (err) {
+    console.error('댓글을 불러오는 중 오류 발생:', err);
   }
 };
 
@@ -249,26 +238,15 @@ const submitComment = async () => {
     return;
   }
 
-  // reCAPTCHA 실행
-  const siteKey = useRuntimeConfig().public.recaptchaSiteKey as string;
-  let token = '';
-
-  try {
-    await new Promise<void>((resolve) => {
-      grecaptcha.enterprise.ready(async () => {
-      token = await window.grecaptcha.enterprise.execute(siteKey, { action: 'submit_comment' });
-      console.log("발급된 reCAPTCHA token:", token);
-        resolve();
-      });
-    });
-  } catch (e) {
-    alert('reCAPTCHA 실행 실패');
+  // reCAPTCHA 토큰 확인
+  const tokenEl = document.querySelector<HTMLTextAreaElement>('[name="g-recaptcha-response"]');
+  const token = tokenEl?.value;
+  if (!token) {
+    recaptchaError.value = 'reCAPTCHA 인증을 완료해주세요.';
     return;
   }
 
-  // 이제 token과 함께 댓글 전송
   isSubmitting.value = true;
-
   try {
     const config = useRuntimeConfig();
     await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${props.postType}/${props.postId}`, {
@@ -277,18 +255,13 @@ const submitComment = async () => {
         username: newComment.value.username,
         password: newComment.value.password,
         content: newComment.value.content,
-        recaptchaToken: token, // reCAPTCHA v3 token
-        recaptchaAction: 'submit_comment' // 서버에서도 검증 시 필요할 수 있음
+        recaptchaToken: token
       }
     });
 
     await fetchComments();
-
-    newComment.value = {
-      username: '',
-      password: '',
-      content: ''
-    };
+    newComment.value = { username: '', password: '', content: '' };
+    (window as any).grecaptcha.reset(); // reCAPTCHA 리셋
   } catch (error) {
     console.error('댓글 등록 중 오류 발생:', error);
     alert('댓글 등록에 실패했습니다.');
@@ -297,32 +270,24 @@ const submitComment = async () => {
   }
 };
 
-
-// 댓글 수정 시작
+// 댓글 수정
 const startEditing = (comment: any) => {
   comment.isEditing = true;
   comment.editContent = comment.content;
   comment.editPassword = '';
 };
 
-// 댓글 수정 취소
 const cancelEditing = (comment: any) => {
   comment.isEditing = false;
   comment.editPassword = '';
 };
 
-// 댓글 수정 제출
 const updateComment = async (comment: any) => {
-  if (!comment.editContent.trim()) {
-    alert('댓글 내용을 입력해주세요.');
+  if (!comment.editContent.trim() || !comment.editPassword.trim()) {
+    alert('수정 내용과 비밀번호를 입력해주세요.');
     return;
   }
-  
-  if (!comment.editPassword.trim()) {
-    alert('비밀번호를 입력해주세요.');
-    return;
-  }
-  
+
   try {
     const config = useRuntimeConfig();
     await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${comment.id}`, {
@@ -332,78 +297,50 @@ const updateComment = async (comment: any) => {
         password: comment.editPassword
       }
     });
-    
-    // 댓글 목록 새로고침
+
     await fetchComments();
-    
-  } catch (error) {
-    console.error('댓글 수정 중 오류 발생:', error);
-    alert('비밀번호가 일치하지 않거나 수정 권한이 없습니다.');
+  } catch (err) {
+    console.error('댓글 수정 중 오류:', err);
+    alert('수정 실패: 비밀번호 불일치 또는 권한 없음');
   }
 };
 
-// 댓글 삭제 모달 열기
-const deleteComment = (commentId: number) => {
-  currentCommentId.value = commentId;
-  showPasswordModal.value = true;
+// 댓글 삭제
+const deleteComment = (id: number) => {
+  currentCommentId.value = id;
   passwordInput.value = '';
+  showPasswordModal.value = true;
 };
 
-// 비밀번호 모달 닫기
 const closePasswordModal = () => {
   showPasswordModal.value = false;
   currentCommentId.value = null;
-  passwordInput.value = '';
 };
 
-// 댓글 삭제 확인
 const confirmDeleteComment = async () => {
   if (!passwordInput.value.trim()) {
     alert('비밀번호를 입력해주세요.');
     return;
   }
-  
+
   try {
     const config = useRuntimeConfig();
     await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${currentCommentId.value}`, {
       method: 'DELETE',
-      body: {
-        password: passwordInput.value
-      }
+      body: { password: passwordInput.value }
     });
-    
-    // 댓글 목록 새로고침
+
     await fetchComments();
-    
-    // 모달 닫기
     closePasswordModal();
-    
-  } catch (error) {
-    console.error('댓글 삭제 중 오류 발생:', error);
+  } catch (err) {
+    console.error('댓글 삭제 실패:', err);
     alert('비밀번호가 일치하지 않거나 삭제 권한이 없습니다.');
   }
 };
 
-// 컴포넌트 마운트 시 초기화
 onMounted(() => {
   fetchComments();
 });
-
-// reCAPTCHA 타입 정의
-declare global {
-  interface Window {
-    grecaptcha: {
-      enterprise: {
-        ready: (cb: () => void) => void;
-        execute: (siteKey: string, options: { action: string }) => Promise<string>;
-        render?: any;
-        reset?: any;
-      };
-    };
-  }
-
-  var grecaptcha: Window['grecaptcha'];
-}
 </script>
 
 <style scoped>
