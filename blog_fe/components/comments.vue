@@ -169,7 +169,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRuntimeConfig } from '#imports';
 
 const props = defineProps<{
@@ -192,7 +192,9 @@ const passwordInput = ref('');
 const currentCommentId = ref<number | null>(null);
 
 // reCAPTCHA 관련
+const recaptchaContainer = ref<HTMLElement | null>(null);
 const recaptchaError = ref('');
+const recaptchaLoaded = ref(false);
 
 // 날짜 포맷
 const formatDate = (dateString: string) => {
@@ -204,6 +206,42 @@ const formatDate = (dateString: string) => {
     minute: '2-digit'
   });
 };
+
+// reCAPTCHA 로드
+const loadRecaptcha = () => {
+  if (typeof window !== 'undefined' && !window.grecaptcha) {
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=explicit`;
+    script.async = true;
+    script.defer = true;
+    script.onload = renderRecaptcha;
+    document.head.appendChild(script);
+  } else if (window.grecaptcha) {
+    renderRecaptcha();
+  }
+};
+
+// reCAPTCHA 렌더링
+const renderRecaptcha = () => {
+  if (recaptchaContainer.value && window.grecaptcha && !recaptchaLoaded.value) {
+    const config = useRuntimeConfig();
+    window.grecaptcha.render(recaptchaContainer.value, {
+      sitekey: config.public.recaptchaSiteKey,
+      theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    });
+    recaptchaLoaded.value = true;
+  }
+};
+
+// 다크모드 변경 감지 및 reCAPTCHA 테마 업데이트
+watch(() => document.documentElement.classList.contains('dark'), (isDark) => {
+  if (recaptchaLoaded.value && window.grecaptcha) {
+    // reCAPTCHA를 다시 렌더링하여 테마 업데이트
+    recaptchaLoaded.value = false;
+    window.grecaptcha.reset();
+    renderRecaptcha();
+  }
+});
 
 // 댓글 불러오기
 const fetchComments = async () => {
@@ -239,12 +277,12 @@ const submitComment = async () => {
   }
 
   // reCAPTCHA 토큰 확인
-  const tokenEl = document.querySelector<HTMLTextAreaElement>('[name="g-recaptcha-response"]');
-  const token = tokenEl?.value;
+  const token = window.grecaptcha?.getResponse();
   if (!token) {
     recaptchaError.value = 'reCAPTCHA 인증을 완료해주세요.';
     return;
   }
+  recaptchaError.value = '';
 
   isSubmitting.value = true;
   try {
@@ -261,7 +299,7 @@ const submitComment = async () => {
 
     await fetchComments();
     newComment.value = { username: '', password: '', content: '' };
-    (window as any).grecaptcha.reset(); // reCAPTCHA 리셋
+    window.grecaptcha?.reset(); // reCAPTCHA 리셋
   } catch (error) {
     console.error('댓글 등록 중 오류 발생:', error);
     alert('댓글 등록에 실패했습니다.');
@@ -338,8 +376,20 @@ const confirmDeleteComment = async () => {
   }
 };
 
+// 전역 타입 선언
+declare global {
+  interface Window {
+    grecaptcha: {
+      render: (container: HTMLElement, options: any) => number;
+      reset: (widgetId?: number) => void;
+      getResponse: (widgetId?: number) => string;
+    };
+  }
+}
+
 onMounted(() => {
   fetchComments();
+  loadRecaptcha();
 });
 </script>
 
