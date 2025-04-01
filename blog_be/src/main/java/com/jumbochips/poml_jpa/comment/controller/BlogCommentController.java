@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/comments/blog")
@@ -28,15 +29,18 @@ public class BlogCommentController {
     }
 
     @PostMapping("{blogId}")
-    public ResponseEntity<CommentResponseDto> createComment(
+    public ResponseEntity<?> createComment(
             @PathVariable Long blogId,
             @RequestBody CommentRequestDto commentRequestDto
     ) {
         try {
             CommentResponseDto commentResponseDto = commentService.createComment(blogId, commentRequestDto);
             return ResponseEntity.ok(commentResponseDto);
+        } catch (IllegalArgumentException e) {
+            // JSON으로 메시지 내려주기
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(500).body(Map.of("message", "서버 오류가 발생했습니다."));
         }
     }
 
