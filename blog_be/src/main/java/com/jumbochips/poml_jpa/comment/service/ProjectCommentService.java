@@ -21,9 +21,6 @@ public class ProjectCommentService implements CommentService{
     private final ProjectRepository projectRepository;
     private final RecaptchaValidationService recaptchaValidationService;
 
-    @Value("${recaptcha.site-key}")
-    private String siteKey;
-
     @Override
     public List<CommentResponseDto> getAllComment(Long projectId) {
         return projectCommentRepository.findAllByProjectId(projectId).stream()
