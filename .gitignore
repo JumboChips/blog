@@ -40,3 +40,7 @@ docker-compose.override.yml
 
 # upload 폴더
 uploads/
+
+# credentials
+credentials/
+credentials/*.json
