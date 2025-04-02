@@ -22,6 +22,8 @@ spring:
         jdbc.time_zone: Asia/Seoul
   mvc:
     static-path-pattern: /static/**
+  jackson:
+    time-zone: Asia/Seoul
 
 # 서버 설정
 cors:
