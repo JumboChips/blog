@@ -16,7 +16,7 @@
             </div>
             <div class="ml-3">
               <h4 class="font-semibold text-gray-800 dark:text-white transition-colors duration-300">{{ comment.username }}</h4>
-              <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ formatDate(comment.createdAt) }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ comment.createdAt }}</p>
             </div>
           </div>
           
@@ -199,18 +199,6 @@ const currentCommentId = ref<number | null>(null);
 const recaptchaContainer = ref<HTMLElement | null>(null);
 const recaptchaError = ref('');
 const recaptchaLoaded = ref(false);
-
-// 날짜 포맷
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Asia/Seoul'
-  });
-};
 
 // 사용자 이름에 따라 일관된 색상 생성
 const getAvatarBgColor = (username: string) => {
