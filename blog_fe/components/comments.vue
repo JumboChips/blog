@@ -331,7 +331,7 @@ const updateComment = async (comment: any) => {
 
   try {
     const config = useRuntimeConfig();
-    await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${comment.id}`, {
+    await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${props.postType}/${comment.id}`, {
       method: 'PUT',
       body: {
         content: comment.editContent,
@@ -366,7 +366,7 @@ const confirmDeleteComment = async () => {
 
   try {
     const config = useRuntimeConfig();
-    await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${currentCommentId.value}`, {
+    await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${props.postType}/${currentCommentId.value}`, {
       method: 'DELETE',
         headers: {
           'x-password': passwordInput.value
