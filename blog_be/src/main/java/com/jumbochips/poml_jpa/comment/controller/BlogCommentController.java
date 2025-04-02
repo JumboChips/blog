@@ -59,10 +59,11 @@ public class BlogCommentController {
 
     @DeleteMapping("{commentId}")
     public ResponseEntity<CommentResponseDto> deleteComment(
-            @PathVariable Long commentId
+            @PathVariable Long commentId,
+            @RequestHeader("x-password") String password
     ) {
         try {
-            commentService.deleteComment(commentId);
+            commentService.deleteComment(commentId, password);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
