@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class BlogCommentService implements CommentService{
                         .commentId(comment.getId())
                         .username(comment.getUsername())
                         .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt())
+                        .createdAt(comment.getCreatedAt().atOffset(ZoneOffset.ofHours(9)))
                         .build()).toList();
     }
 
@@ -60,7 +60,7 @@ public class BlogCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(comment.getCreatedAt().atOffset(ZoneOffset.ofHours(9)))
                 .build();
     }
 
@@ -80,7 +80,7 @@ public class BlogCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(comment.getCreatedAt().atOffset(ZoneOffset.ofHours(9)))
                 .build();
     }
 
