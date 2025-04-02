@@ -13,6 +13,6 @@ public class CommentResponseDto {
     private Long commentId;
     private String username;
     private String content;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX") // +09:00 포함
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "Asia/Seoul") // +09:00 포함
     private OffsetDateTime createdAt;
 }
