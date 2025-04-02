@@ -25,7 +25,7 @@ public class ProjectCommentService implements CommentService{
     private final RecaptchaValidationService recaptchaValidationService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 a h:mm");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 a h:mm").withZone(ZoneId.of("Asia/Seoul"));
 
     @Override
     public List<CommentResponseDto> getAllComment(Long projectId) {
