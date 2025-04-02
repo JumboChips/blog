@@ -120,7 +120,7 @@ const openMenuId = ref<number | null>(null);
 // 검색 및 페이징 상태
 const searchQuery = ref('');
 const currentPage = ref(1);
-const itemsPerPage = 3; // 한 페이지에 표시할 항목 수
+const itemsPerPage = 6; // 한 페이지에 표시할 항목 수
 
 // 검색어에 따른 필터링된 아이템
 const filteredItems = computed(() => {
