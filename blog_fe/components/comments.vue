@@ -16,7 +16,7 @@
             </div>
             <div class="ml-3">
               <h4 class="font-semibold text-gray-800 dark:text-white transition-colors duration-300">{{ comment.username }}</h4>
-              <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ comment.createdAt }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ formatDate(comment.createdAt) }}</p>
             </div>
           </div>
           
@@ -180,6 +180,18 @@ const props = defineProps<{
   postId: number | string;
   postType: 'blog' | 'project';
 }>();
+
+// 시간 포맷팅 함수
+const formatDate = (utcString: string) => {
+  return new Date(utcString).toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
 
 // 댓글 상태
 const comments = ref<any[]>([]);
