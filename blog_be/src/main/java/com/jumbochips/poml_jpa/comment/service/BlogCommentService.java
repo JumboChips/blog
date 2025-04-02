@@ -11,8 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,9 @@ public class BlogCommentService implements CommentService{
     private final RecaptchaValidationService recaptchaValidationService;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 a h:mm")
+            .withZone(ZoneId.of("Asia/Seoul"));
+
 
     @Override
     public List<CommentResponseDto> getAllComment(Long blogId) {
@@ -30,7 +34,7 @@ public class BlogCommentService implements CommentService{
                         .commentId(comment.getId())
                         .username(comment.getUsername())
                         .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt())
+                        .createdAt(formatter.format(comment.getCreatedAt()))
                         .build()).toList();
     }
 
@@ -60,7 +64,7 @@ public class BlogCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(formatter.format(comment.getCreatedAt()))
                 .build();
     }
 
@@ -80,7 +84,7 @@ public class BlogCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(formatter.format(comment.getCreatedAt()))
                 .build();
     }
 
