@@ -23,9 +23,6 @@ public class BlogCommentService implements CommentService{
     private final RecaptchaValidationService recaptchaValidationService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 a h:mm").withZone(ZoneId.of("Asia/Seoul"));
-
-
     @Override
     public List<CommentResponseDto> getAllComment(Long blogId) {
         return blogCommentRepository.findAllByBlogId(blogId).stream()
@@ -33,7 +30,7 @@ public class BlogCommentService implements CommentService{
                         .commentId(comment.getId())
                         .username(comment.getUsername())
                         .content(comment.getContent())
-                        .createdAt(formatter.format(comment.getCreatedAt()))
+                        .createdAt(comment.getCreatedAt())
                         .build()).toList();
     }
 
@@ -63,7 +60,7 @@ public class BlogCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(formatter.format(comment.getCreatedAt()))
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 
@@ -83,7 +80,7 @@ public class BlogCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(formatter.format(comment.getCreatedAt()))
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 
