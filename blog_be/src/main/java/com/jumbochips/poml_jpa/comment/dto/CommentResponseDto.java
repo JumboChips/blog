@@ -14,5 +14,5 @@ public class CommentResponseDto {
     private String username;
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "Asia/Seoul")
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 }
