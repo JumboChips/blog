@@ -249,7 +249,10 @@ const fetchComments = async () => {
     const config = useRuntimeConfig();
     const response = await $fetch<any[]>(`${config.public.apiBaseUrl}/api/v1/comments/${props.postType}/${props.postId}`);
     comments.value = response.map(comment => ({
-      ...comment,
+      id: comment.commentId,
+      username: comment.username,
+      content: comment.content,
+      createdAt: comment.createdAt,
       isEditing: false,
       editContent: comment.content,
       editPassword: ''
