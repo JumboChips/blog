@@ -46,7 +46,7 @@ public class ProjectCommentService implements CommentService{
         ProjectComment comment = ProjectComment.builder()
                 .project(project)
                 .username(dto.getUsername())
-                .pwd(dto.getPwd())
+                .pwd(dto.getPassword())
                 .content(dto.getContent())
                 .build();
 

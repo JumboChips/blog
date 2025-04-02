@@ -7,7 +7,7 @@ import lombok.Getter;
 @Data
 public class CommentRequestDto {
     private String username;
-    private String pwd;
+    private String password;
     private String content;
     private String recaptchaToken;
 }
