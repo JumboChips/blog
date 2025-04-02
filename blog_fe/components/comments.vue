@@ -7,7 +7,11 @@
       <div v-for="comment in comments" :key="comment.id" class="comment-item border-b border-gray-200 dark:border-gray-700 pb-4 transition-colors duration-300">
         <div class="flex justify-between items-start">
           <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-300 font-bold text-lg transition-colors duration-300">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-colors duration-300"
+              :style="{ 
+                backgroundColor: getAvatarBgColor(comment.username), 
+                color: getAvatarTextColor(comment.username) 
+              }">
               {{ comment.username.charAt(0).toUpperCase() }}
             </div>
             <div class="ml-3">
@@ -198,13 +202,63 @@ const recaptchaLoaded = ref(false);
 
 // 날짜 포맷
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('ko-KR', {
+  return new Date(dateString).toLocaleString('ko-KR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
   });
+};
+
+// 사용자 이름에 따라 일관된 색상 생성
+const getAvatarBgColor = (username: string) => {
+  const colors = [
+    'rgb(239, 246, 255)', // blue-50
+    'rgb(254, 242, 242)', // red-50
+    'rgb(240, 253, 244)', // green-50
+    'rgb(254, 249, 195)', // yellow-100
+    'rgb(243, 232, 255)', // purple-50
+    'rgb(254, 243, 199)', // amber-100
+    'rgb(224, 242, 254)', // sky-100
+    'rgb(253, 230, 138)', // amber-200
+    'rgb(254, 226, 226)', // red-100
+    'rgb(209, 250, 229)', // emerald-100
+  ];
+  
+  const darkColors = [
+    'rgb(30, 58, 138)', // blue-900
+    'rgb(127, 29, 29)', // red-900
+    'rgb(6, 78, 59)',   // green-900
+    'rgb(113, 63, 18)', // yellow-900
+    'rgb(88, 28, 135)', // purple-900
+    'rgb(120, 53, 15)', // amber-900
+    'rgb(12, 74, 110)', // sky-900
+    'rgb(133, 77, 14)', // amber-800
+    'rgb(153, 27, 27)', // red-800
+    'rgb(6, 95, 70)',   // emerald-800
+  ];
+  
+  // 사용자 이름에서 해시 값 생성
+  let hash = 0;
+  for (let i = 0; i < username.length; i++) {
+    hash = username.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  // 색상 인덱스 계산
+  const index = Math.abs(hash) % colors.length;
+  
+  // 다크 모드에 따라 색상 반환
+  return document.documentElement.classList.contains('dark') 
+    ? darkColors[index] 
+    : colors[index];
+};
+
+// 배경색에 따라 텍스트 색상 결정
+const getAvatarTextColor = (username: string) => {
+  return document.documentElement.classList.contains('dark') 
+    ? 'rgb(255, 255, 255)' // 다크 모드에서는 흰색 텍스트
+    : 'rgb(55, 65, 81)';   // 라이트 모드에서는 어두운 텍스트
 };
 
 // reCAPTCHA 로드
@@ -233,14 +287,17 @@ const renderRecaptcha = () => {
   }
 };
 
-// 다크모드 변경 감지 및 reCAPTCHA 테마 업데이트
+// 다크모드 변경 감지 및 UI 업데이트
 watch(() => document.documentElement.classList.contains('dark'), (isDark) => {
+  // reCAPTCHA 업데이트
   if (recaptchaLoaded.value && window.grecaptcha) {
-    // reCAPTCHA를 다시 렌더링하여 테마 업데이트
     recaptchaLoaded.value = false;
     window.grecaptcha.reset();
     renderRecaptcha();
   }
+  
+  // 아바타 색상 업데이트를 위한 강제 리렌더링
+  comments.value = [...comments.value];
 });
 
 // 댓글 불러오기
@@ -414,6 +471,7 @@ onMounted(() => {
 
 /* 다크 모드에서 reCAPTCHA 테마 조정 */
 :deep(.dark .g-recaptcha) {
-  filter: invert(0.85) hue-rotate(180deg);
+  filter: invert(0.9) hue-rotate(180deg) brightness(0.8) contrast(1.2);
 }
 </style>
+
