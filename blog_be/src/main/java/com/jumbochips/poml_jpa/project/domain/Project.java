@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +51,10 @@ public class Project {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDate createdAt;
+    private OffsetDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDate updatedAt;
+    private OffsetDateTime updatedAt;
 
     // 비즈니스 로직
     public void updateCategory(ProjectCategory category) {

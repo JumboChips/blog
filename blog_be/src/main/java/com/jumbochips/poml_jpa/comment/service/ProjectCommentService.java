@@ -31,7 +31,7 @@ public class ProjectCommentService implements CommentService{
                         .commentId(comment.getId())
                         .username(comment.getUsername())
                         .content(comment.getContent())
-                        .createdAt(comment.getCreatedAt().atOffset(ZoneOffset.ofHours(9)))
+                        .createdAt(comment.getCreatedAt())
                         .build()).toList();
     }
 
@@ -61,7 +61,7 @@ public class ProjectCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(comment.getCreatedAt().atOffset(ZoneOffset.ofHours(9)))
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 
@@ -81,7 +81,7 @@ public class ProjectCommentService implements CommentService{
                 .commentId(comment.getId())
                 .username(comment.getUsername())
                 .content(comment.getContent())
-                .createdAt(comment.getCreatedAt().atOffset(ZoneOffset.ofHours(9)))
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 
