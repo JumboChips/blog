@@ -365,7 +365,10 @@ const confirmDeleteComment = async () => {
     const config = useRuntimeConfig();
     await $fetch(`${config.public.apiBaseUrl}/api/v1/comments/${currentCommentId.value}`, {
       method: 'DELETE',
-      body: { password: passwordInput.value }
+        headers: {
+          'x-password': passwordInput.value
+        }
+
     });
 
     await fetchComments();
