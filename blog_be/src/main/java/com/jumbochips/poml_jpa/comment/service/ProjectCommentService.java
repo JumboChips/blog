@@ -8,10 +8,11 @@ import com.jumbochips.poml_jpa.common.recaptcha.RecaptchaValidationService;
 import com.jumbochips.poml_jpa.project.domain.Project;
 import com.jumbochips.poml_jpa.project.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,8 @@ public class ProjectCommentService implements CommentService{
     private final ProjectCommentRepository projectCommentRepository;
     private final ProjectRepository projectRepository;
     private final RecaptchaValidationService recaptchaValidationService;
+    private final BCryptPasswordEncoder passwordEncoder;
+
 
     @Override
     public List<CommentResponseDto> getAllComment(Long projectId) {
@@ -43,10 +46,12 @@ public class ProjectCommentService implements CommentService{
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Blog not found"));
 
+        String encodedPwd = passwordEncoder.encode(dto.getPassword());
+
         ProjectComment comment = ProjectComment.builder()
                 .project(project)
                 .username(dto.getUsername())
-                .pwd(dto.getPassword())
+                .pwd(encodedPwd)
                 .content(dto.getContent())
                 .build();
 
@@ -64,6 +69,11 @@ public class ProjectCommentService implements CommentService{
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto dto) {
         ProjectComment comment = projectCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+
+        if (!passwordEncoder.matches(dto.getPassword(), comment.getPwd())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
         comment.updateContent(dto.getContent());
         projectCommentRepository.save(comment);
 
@@ -76,7 +86,12 @@ public class ProjectCommentService implements CommentService{
     }
 
     @Override
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, String password) {
+        ProjectComment comment = projectCommentRepository.findById(commentId)
+                        .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+        if (!passwordEncoder.matches(password, comment.getPwd())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
         projectCommentRepository.deleteById(commentId);
     }
 }

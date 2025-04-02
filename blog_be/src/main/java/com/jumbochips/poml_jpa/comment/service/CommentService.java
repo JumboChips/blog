@@ -9,5 +9,5 @@ public interface CommentService {
     List<CommentResponseDto> getAllComment(Long postId);
     CommentResponseDto createComment (Long postId, CommentRequestDto commentRequestDto);
     CommentResponseDto updateComment (Long commentId, CommentRequestDto commentRequestDto);
-    void deleteComment (Long commentId);
+    void deleteComment (Long commentId, String password);
 }
