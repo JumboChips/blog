@@ -19,11 +19,11 @@ spring:
     properties:
       hibernate:
         format_sql: true # SQL 포맷 설정
-        jdbc.time_zone: UTC
+        jdbc.time_zone: Asia/Seoul
   mvc:
     static-path-pattern: /static/**
   jackson:
-    time-zone: UTC
+    time-zone: Asia/Seoul
 
 # 서버 설정
 cors:
