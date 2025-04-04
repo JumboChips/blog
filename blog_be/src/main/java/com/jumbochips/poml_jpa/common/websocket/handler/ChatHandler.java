@@ -1,18 +1,23 @@
 package com.jumbochips.poml_jpa.common.websocket.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jumbochips.poml_jpa.common.websocket.dto.ChatMessage;
+import com.jumbochips.poml_jpa.common.websocket.dto.ChatMessageDto;
+import com.jumbochips.poml_jpa.common.websocket.entity.ChatMessage;
+import com.jumbochips.poml_jpa.common.websocket.service.ChatMessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@RequiredArgsConstructor
 public class ChatHandler extends TextWebSocketHandler {
 
     // 세션 ID → 세션 정보 저장
@@ -22,6 +27,8 @@ public class ChatHandler extends TextWebSocketHandler {
     private static final Map<String, Set<WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final ChatMessageService chatMessageService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -33,11 +40,28 @@ public class ChatHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String roomId = getRoomIdFromQuery(session);
-        ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
+        // 1. DTO로 역직렬화
+        ChatMessageDto dto = objectMapper.readValue(message.getPayload(), ChatMessageDto.class);
 
+        // 2. Entity로 변환하여 저장
+        ChatMessage entity = new ChatMessage();
+        entity.setRoomId(roomId);
+        entity.setSender(dto.getSender());
+        entity.setMessage(dto.getMessage());
+        entity.setSentAt(Instant.now()); // 서버 시간으로 저장
+        chatMessageService.save(entity);
+
+        // 3. 클라이언트로 보낼 DTO 구성
+        ChatMessageDto broadcast = new ChatMessageDto(
+                entity.getSender(),
+                entity.getMessage(),
+                entity.getSentAt().toString()
+        );
+
+        // 4. 같은 방 모든 세션에 브로드캐스트
         for (WebSocketSession s : roomSessions.getOrDefault(roomId, Set.of())) {
             if (s.isOpen()) {
-                s.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
+                s.sendMessage(new TextMessage(objectMapper.writeValueAsString(broadcast)));
             }
         }
     }
