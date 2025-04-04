@@ -45,6 +45,8 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.7.0'
     // recCAPTCHA 관련 의존성
     implementation 'com.google.cloud:google-cloud-recaptchaenterprise:3.56.0'
+    // websocket 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
 tasks.named('test') {
