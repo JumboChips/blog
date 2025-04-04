@@ -11,6 +11,9 @@
 
       <!-- Footer 영역 -->
       <Footer />
+
+      <!-- 실시간 채팅 컴포넌트 -->
+      <FloatingChat :isDarkMode="isDarkMode" />
     </div>
   </div>
 </template>
