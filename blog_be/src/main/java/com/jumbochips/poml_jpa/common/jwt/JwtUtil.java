@@ -6,6 +6,9 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,45 +17,48 @@ import io.jsonwebtoken.Jwts;
 @Component
 public class JwtUtil {
 
-    private SecretKey secretKey;
+    private final SecretKey secretKey;
 
     public JwtUtil(@Value("${jwt.secret}") String secret) {
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public Long getUserIdFromToken(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId",
-                Long.class);
-    }
+    public String createJwtToken(String username, String role, Long userId, Long expiryMillis) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expiryMillis);
 
-    public String getUsernameFromToken(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username",
-                String.class);
-    }
-
-    public String getRoleFromToken(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role",
-                String.class);
-    }
-
-    public Boolean isExpired(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration()
-                .before(new Date());
-    }
-
-    public String createJwtToken(String username, String role, Long userId, Long expiredMs) {
-
-        return Jwts.builder()
-                .claim("username", username)
-                .claim("role", role)
+        return Jwts.builder().subject(username)
                 .claim("userId", userId)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
+                .claim("role", role).issuedAt(now).expiration(expiryDate)
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
+    }
+
+    public Claims parseClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            throw new RuntimeException("유효하지 않은 토큰입니다.", e);
+        }
+    }
+
+    public boolean isExpired(String token) {
+        return parseClaims(token).getExpiration().before(new Date());
+    }
+
+    public String getUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    public String getRole(String token) {
+        return parseClaims(token).get("role", String.class);
+    }
+
+    public Long getUserId(String token) {
+        return parseClaims(token).get("userId", Long.class);
     }
 }

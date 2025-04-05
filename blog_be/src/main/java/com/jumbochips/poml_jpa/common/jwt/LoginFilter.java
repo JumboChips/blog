@@ -2,8 +2,12 @@ package com.jumbochips.poml_jpa.common.jwt;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jumbochips.poml_jpa.common.jwt.dto.LoginRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,59 +28,55 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
 
-        // username, password 추출
-        String username = obtainUsername(req);
-        String password = obtainPassword(req);
+        try {
+            LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
 
-        System.out.println(username);
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(), loginRequest.getPassword());
 
-        // Spring Security에서 username, password를 검증하기 위해 토큰에 담는다.
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password,
-                null);
+            return authenticationManager.authenticate(authRequest);
 
-        // token에 담은 검증을 위한 AuthenticationManager로 전달
-        return authenticationManager.authenticate(authRequest);
+        } catch (IOException e) {
+            throw new RuntimeException("로그인 요청 파싱 실패", e);
+        }
     }
 
-    // 로그인 성공시 실행하는 메서드 (여기서 JWT를 발급받는다.)
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-            Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain chain, Authentication authResult)
+            throws IOException {
 
-        CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authResult.getPrincipal();
+        String token = jwtUtil.createJwtToken(
+                userDetails.getUsername(),
+                userDetails.getAuthorities().iterator().next().getAuthority(),
+                userDetails.getId(),
+                1000L * 60 * 60 * 6 // 6시간
+        );
 
-        Long userId = customUserDetails.getUserId();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        String username = customUserDetails.getUsername();
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", token);
+        tokenMap.put("username", userDetails.getUsername());
+        tokenMap.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
 
-        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
-        Iterator<? extends GrantedAuthority> authoritiesIterator = authorities.iterator();
-        GrantedAuthority authority = authoritiesIterator.next();
-
-        String role = authority.getAuthority();
-
-        String token = jwtUtil.createJwtToken(username, role, userId, 60 * 60 * 100000000L);
-
-        // JSON 형태로 응답 본문에 토큰 포함
-        // response.setContentType("application/json");
-        // response.setCharacterEncoding("UTF-8");
-        // response.getWriter().write("{\"token\":\"" + token + "\"}");
-
-        // Authorization 헤더에 Bearer 토큰 추가
-        response.addHeader("Authorization", "Bearer " + token);
+        response.getWriter().write(objectMapper.writeValueAsString(tokenMap));
     }
 
-    // 로그인 실패시 실행하는 메서드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException failed) throws IOException, ServletException {
-
+                                              AuthenticationException failed) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"로그인 실패: 사용자 정보가 일치하지 않습니다.\"}");
     }
-
 }
+

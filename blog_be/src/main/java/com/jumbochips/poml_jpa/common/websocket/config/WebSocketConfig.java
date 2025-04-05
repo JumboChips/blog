@@ -13,10 +13,13 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final ChatHandler chatHandler;
+    private final AlertHandler alertHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(chatHandler, "/ws/chat")
                 .setAllowedOrigins("*"); // 프론트 CORS 문제 방지
+        registry.addHandler(alertHandler, "/ws/alert")
+                .setAllowedOrigins("*");
     }
 }

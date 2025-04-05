@@ -15,25 +15,24 @@ public class JoinService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public void joinProcess(JoinDto joinDto) {
+    public boolean joinProcess(JoinDto joinDto) {
 
         String username = joinDto.getUsername();
         String password = joinDto.getPassword();
 
-        String encodedPassword = bCryptPasswordEncoder.encode(password);
-
-        Boolean isExist = userRepository.existsByUsername(username);
-
-        if (isExist) {
-            return;
+        if (userRepository.existsByUsername(username)) {
+            return false;
         }
+
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
 
         User newUser = User.builder()
                 .username(username)
                 .password(encodedPassword)
-                .role("ROLE_ADMIN")
+                .role("ROLE_USER") // 관리자만 "ROLE_ADMIN" 부여
                 .build();
 
         userRepository.save(newUser);
+        return true;
     }
 }
