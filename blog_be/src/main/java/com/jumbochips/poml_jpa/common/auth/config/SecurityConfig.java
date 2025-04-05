@@ -37,7 +37,7 @@ public class SecurityConfig {
 
         @Bean
         public AuthenticationManager authenticationManager() throws Exception {
-                return new ProviderManager(authenticationProvider());
+                return new ProviderManager(List.of(authenticationProvider()));
         }
 
         @Bean
