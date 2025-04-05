@@ -1,9 +1,8 @@
 package com.jumbochips.poml_jpa.common.auth.config;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import com.jumbochips.poml_jpa.common.auth.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +30,8 @@ public class SecurityConfig {
 
         private final AuthenticationConfiguration authConfig;
         private final JwtUtil jwtUtil;
+        private final CustomUserDetailsService userDetailsService;
+
 
         @Bean
         public AuthenticationManager authenticationManager() throws Exception {
@@ -61,7 +62,7 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         )
 
-                        .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                        .addFilterBefore(new JwtFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
                         .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
