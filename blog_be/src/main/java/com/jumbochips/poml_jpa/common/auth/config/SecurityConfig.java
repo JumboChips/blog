@@ -1,19 +1,16 @@
 package com.jumbochips.poml_jpa.common.auth.config;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 
-import com.jumbochips.poml_jpa.common.auth.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,69 +28,84 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-        private final AuthenticationConfiguration authConfig;
+        private final AuthenticationConfiguration authenticationConfiguration;
         private final JwtUtil jwtUtil;
-        private final CustomUserDetailsService userDetailsService;
-
 
         @Bean
-        public PasswordEncoder passwordEncoder() {
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+                return configuration.getAuthenticationManager();
+        }
+
+        @Bean
+        public BCryptPasswordEncoder bCryptPasswordEncoder() {
                 return new BCryptPasswordEncoder();
         }
 
         @Bean
-        public DaoAuthenticationProvider authenticationProvider() {
-                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-                provider.setUserDetailsService(userDetailsService);
-                provider.setPasswordEncoder(passwordEncoder());
-                return provider;
-        }
+        public SecurityFilterChain filterChain(HttpSecurity http,
+                        AuthenticationConfiguration authenticationConfiguration) throws Exception {
 
-        @Bean
-        public AuthenticationManager authenticationManager() {
-                return new ProviderManager(List.of(authenticationProvider()));
-        }
-
-
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
-                        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                        .csrf(csrf -> csrf.disable())
-                        .formLogin(form -> form.disable())
-                        .httpBasic(httpBasic -> httpBasic.disable())
+                                .cors((cors) -> cors
+                                                .configurationSource(new CorsConfigurationSource() {
 
-                        .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/v1/**", "/login", "/uploads/**", "/error", "/ws/**")
-                                .permitAll()
-                                .requestMatchers("/admin").hasRole("ADMIN")
-                                .anyRequest().authenticated()
-                        )
+                                                        @Override
+                                                        public CorsConfiguration getCorsConfiguration(
+                                                                        HttpServletRequest request) {
+                                                                CorsConfiguration config = new CorsConfiguration();
 
-                        .sessionManagement(session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        )
+                                                                config.setAllowCredentials(true);
+                                                                config.addAllowedOriginPattern("*");
+                                                                config.setAllowedOrigins(Arrays.asList(
+                                                                                "http://localhost:3000",
+                                                                                "https://jumbochips.com"));
+                                                                config.setAllowedMethods(
+                                                                                Collections.singletonList("*"));
+                                                                config.setAllowedHeaders(
+                                                                                Collections.singletonList("*"));
+                                                                config.setAllowCredentials(true);
+                                                                config.setMaxAge(3600L);
 
-                        .addFilterBefore(new JwtFilter(jwtUtil, userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                        .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                                                                config.setExposedHeaders(Collections
+                                                                                .singletonList("Authorization"));
+
+                                                                return config;
+                                                        }
+                                                }));
+
+                // csrf disable
+                http
+                                .csrf((auth) -> auth.disable());
+
+                // Form 로그인 방식 disable
+                http
+                                .formLogin((auth) -> auth.disable());
+
+                // http basic 인증 방식 disable
+                http
+                                .httpBasic((auth) -> auth.disable());
+
+                // 경로별 인가 작업
+                http
+                                .authorizeHttpRequests((auth) -> auth
+                                                .requestMatchers("/login", "/api/v1/**", "/api/v1/join", "/uploads/**", "/error", "/ws/**")
+                                                .permitAll()
+                                                .requestMatchers("/admin").hasRole("ADMIN")
+                                                .anyRequest().authenticated());
+
+                http
+                                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+
+                http
+                                .addFilterAt(new LoginFilter(
+                                                authenticationManager(authenticationConfiguration), jwtUtil),
+                                                UsernamePasswordAuthenticationFilter.class);
+
+                // 세션 설정
+                http
+                                .sessionManagement((session) -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
                 return http.build();
-        }
-
-        // Cors 설정을 별도 메서드로 분리
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowCredentials(true);
-                config.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://jumbochips.com")); // 개발/운영 도메인 분리 권장
-                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                config.setAllowedHeaders(List.of("*"));
-                config.setExposedHeaders(List.of("Authorization"));
-                config.setMaxAge(3600L);
-
-                org.springframework.web.cors.UrlBasedCorsConfigurationSource source =
-                        new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/**", config);
-                return source;
         }
 }
