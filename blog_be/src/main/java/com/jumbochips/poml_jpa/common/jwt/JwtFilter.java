@@ -2,9 +2,11 @@ package com.jumbochips.poml_jpa.common.jwt;
 
 import java.io.IOException;
 
+import com.jumbochips.poml_jpa.common.auth.service.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jumbochips.poml_jpa.common.auth.dto.CustomUserDetails;
@@ -20,60 +22,44 @@ import lombok.RequiredArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        // request에서 Authorization 헤더를 찾음
-        String authorization = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-
-            System.out.println("token null");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-
-            // 조건이 해당되면 메소드 종료(필수)
             return;
         }
 
-        String token = authorization.split(" ")[1];
+        String token = authHeader.substring(7);
 
-        // 토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
+        try {
+            if (jwtUtil.isExpired(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\": \"만료된 토큰입니다.\"}");
+                return;
+            }
 
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
+            String username = jwtUtil.getUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // 조건이 해당되면 메소드 종료(필수)
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"유효하지 않은 토큰입니다.\"}");
             return;
         }
-
-        String username = jwtUtil.getUsernameFromToken(token);
-        String role = jwtUtil.getRoleFromToken(token);
-        Long userId = jwtUtil.getUserIdFromToken(token);
-
-        User user = User.builder()
-                .id(userId)
-                .username(username)
-                .password("temppwd")
-                .role(role)
-                .build();
-
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null,
-                customUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // /login 경로는 필터링하지 않음
-        return request.getRequestURI().equals("/login");
-    }
-
+    // 필터 제외 경로는 설정에서 처리하는 것이 더 바람직
 }
